@@ -43,6 +43,7 @@ android {
 }
 
 dependencies {
+
     implementation("com.russhwolf:multiplatform-settings-no-arg:1.1.1")
     implementation(platform("io.github.jan-tennert.supabase:bom:3.4.1"))
     implementation("io.github.jan-tennert.supabase:postgrest-kt")
@@ -66,4 +67,5 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
 }

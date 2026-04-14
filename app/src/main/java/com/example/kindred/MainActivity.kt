@@ -63,6 +63,9 @@ class MainActivity : ComponentActivity() {
                         composable("tv"){
                             TV(navController)
                         }
+                        composable("addBook"){
+                            AddBook(navController)
+                        }
                     }
                 }
             }

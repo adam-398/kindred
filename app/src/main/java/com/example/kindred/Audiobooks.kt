@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -19,7 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import kotlinx.coroutines.launch
+import androidx.compose.material3.FloatingActionButton
 
 /**
  * Composable function which displays the books screen.
@@ -44,11 +44,19 @@ fun Audiobooks(navController: NavController) {
                         }
                     }
                 )
+            },
+            floatingActionButton = {
+                FloatingActionButton(onClick = { navController.navigate("addBook") }) {
+                    Icon(Icons.Default.Add, contentDescription = "Add Book")
+                }
             }
         ) { paddingValues ->
-            Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)) {
                 // content
             }
         }
     }
 }
+
