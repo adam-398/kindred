@@ -51,7 +51,18 @@ class MainActivity : ComponentActivity() {
                         composable("landing") {
                             Landing(navController)
                         }
-
+                        composable("books"){
+                            Books(navController)
+                        }
+                        composable("audiobooks"){
+                            Audiobooks(navController)
+                        }
+                        composable("movies"){
+                            Movies(navController)
+                        }
+                        composable("tv"){
+                            TV(navController)
+                        }
                     }
                 }
             }
