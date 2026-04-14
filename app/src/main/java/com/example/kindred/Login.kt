@@ -1,10 +1,14 @@
 package com.example.kindred
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,10 +20,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.autofill.ContentType
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.contentType
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import kotlinx.coroutines.launch
+
 
 
 /**
@@ -28,8 +37,8 @@ import androidx.navigation.NavHostController
  * @param NavHostController The navigation controller for the app.
  */
 @Composable
-fun Login(navHostController: NavHostController) {
-    val coRoutineScope = rememberCoroutineScope()
+fun Login(navController: NavController) {
+    val coroutineScope = rememberCoroutineScope()
     var emailState by remember { mutableStateOf("") }
     var passwordState by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
@@ -43,7 +52,7 @@ fun Login(navHostController: NavHostController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(all = 10.dp),
+                .padding(all = 75.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -67,9 +76,49 @@ fun Login(navHostController: NavHostController) {
                 },
                 label =
                     { Text(text = "Password")},
+                visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier
                     .semantics { contentType = ContentType.Password }
                     .padding(all = 10.dp)
+            )
+            Button(
+                onClick = {
+                    if (isLoading) return@Button
+                    coroutineScope.launch {
+                        isLoading = true
+                        println("Trying login with email: '${emailState}' and password: '${passwordState}'")
+                        val success = loginUser(emailState, passwordState)
+                        isLoading = false
+                        if (success) {
+                            navController.navigate("landing") {
+                                popUpTo("login") { inclusive = true }
+                            }
+                        } else {
+                            errorMessage = "Invalid email or password"
+                        }
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Text(if (isLoading) "Logging in..." else "Log in")
+            }
+            if (errorMessage.isNotEmpty()) {
+                Text(
+                    text = errorMessage,
+                    color = Color.Red,
+                    modifier = Modifier
+                        .padding(10.dp)
+                )
+            }
+            Text(
+                text = "Forgot password?",
+                color = Color.Blue,
+                modifier = Modifier
+                    .padding(10.dp)
+                    .clickable {}
             )
 
 
