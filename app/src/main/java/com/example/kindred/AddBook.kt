@@ -9,15 +9,20 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,6 +31,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,9 +40,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 
+/**
+ * Composable function which displays the add book screen.
+ *
+ * @param NavHostController The navigation controller for the app.
+ */
 @Composable
 fun AddBook(navController: NavController) {
     var bookTitle by remember { mutableStateOf("") }
@@ -45,10 +58,18 @@ fun AddBook(navController: NavController) {
     var selectedBookGenres by remember { mutableStateOf(setOf<String>()) }
     var bookTheme by remember { mutableStateOf("") }
     var bookNotes by remember { mutableStateOf("") }
+    var isFavourite by remember { mutableStateOf(false) }
+    var closeAddBook by remember { mutableStateOf(false) }
+
+    val viewModel: GoogleViewModel = viewModel()
+    val bookSuggestions by viewModel.bookData.collectAsState()
+
+
+
 
     val genreOptions = listOf(
         "Fiction", "Non-Fiction", "Sci-fi", "Fantasy", "Horror", "Mystery",
-        "Romance", "Thriller", "Comedy", "Drama", "Apocalyptic", "Dystopian", "Adventure"
+        "Thriller", "Comedy", "Drama", "Apocalyptic", "Dystopian", "Adventure"
     )
 
     Surface(
@@ -73,17 +94,72 @@ fun AddBook(navController: NavController) {
                         .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(
-                        text = "Add Book",
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.padding(top = 16.dp, bottom = 24.dp)
-                    )
-                    OutlinedTextField(
-                        value = bookTitle,
-                        onValueChange = { bookTitle = it },
-                        label = { Text(text = "Title") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+
+                        ) {
+                        IconButton(
+                            onClick = { isFavourite = !isFavourite },
+                            modifier = Modifier
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Star,
+                                contentDescription = "Favourite",
+                                tint = if (isFavourite) MaterialTheme.colorScheme.primary else Color.Gray,
+                                modifier = Modifier
+                                    .size(28.dp)
+                                    .offset(x = 5.dp),
+                            )
+                        }
+                        Text(
+                            text = "Add books",
+                            modifier = Modifier.weight(1f),
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme
+                                .typography.titleLarge,
+                            textDecoration = TextDecoration.Underline
+                        )
+                        IconButton(
+                            onClick = { closeAddBook = true },
+                            modifier = Modifier
+                        ) {
+                            Icon(
+                                Icons.Filled.Close,
+                                contentDescription = "Close entity form",
+                                modifier = Modifier
+                                    .size(28.dp)
+                                    .offset(x = (-5).dp),
+                            )
+                        }
+                    }
+                    Box {
+                        OutlinedTextField(
+                            value = bookTitle,
+                            onValueChange = {
+                                bookTitle = it
+                                viewModel.fetchBookData(it)
+                            },
+                            label = { Text(text = "Title") },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        DropdownMenu(
+                            expanded = bookSuggestions.isNotEmpty(),
+                            onDismissRequest = { viewModel.clearSuggestions() }
+                        ) {
+                            bookSuggestions.forEach { book ->
+                                DropdownMenuItem(
+                                    text = { Text(book.volumeInfo.title) },
+                                    onClick = {
+                                        bookTitle = book.volumeInfo.title
+                                        bookAuthor = book.volumeInfo.authors?.firstOrNull() ?: ""
+                                        selectedBookGenres = book.volumeInfo.categories?.toSet() ?: emptySet()
+                                        viewModel.clearSuggestions()
+                                    }
+                                )
+                            }
+                        }
+                    }
                     OutlinedTextField(
                         value = bookAuthor,
                         onValueChange = { bookAuthor = it },
@@ -134,11 +210,12 @@ fun AddBook(navController: NavController) {
                             FilterChip(
                                 selected = selectedBookGenres.contains(option),
                                 onClick = {
-                                    selectedBookGenres = if (selectedBookGenres.contains(option)) {
-                                        selectedBookGenres - option
-                                    } else {
-                                        selectedBookGenres + option
-                                    }
+                                    selectedBookGenres =
+                                        if (selectedBookGenres.contains(option)) {
+                                            selectedBookGenres - option
+                                        } else {
+                                            selectedBookGenres + option
+                                        }
                                 },
                                 label = {
                                     Text(
@@ -185,5 +262,16 @@ fun AddBook(navController: NavController) {
                 }
             }
         }
+    }
+    if (closeAddBook) {
+        ConfirmationMessage(
+            title = "Cancel adding book?",
+            message = "Are you sure you want to close the entity form?",
+            confirmString = "Yes",
+            dismissString = "No",
+            icon = null,
+            onConfirm = { navController.popBackStack() },
+            onDismiss = { closeAddBook = false }
+        )
     }
 }
