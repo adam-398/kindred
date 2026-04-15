@@ -1,9 +1,9 @@
 package com.example.kindred
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
@@ -16,10 +16,20 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.kindred.DataModels.Book
+import kotlinx.coroutines.launch
+import androidx.compose.foundation.lazy.items
 
 /**
  * Composable function which displays the books screen.
@@ -29,6 +39,15 @@ import androidx.navigation.NavController
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Books(navController: NavController) {
+
+    var isRefreshing by remember { mutableStateOf(false) }
+
+    var books by remember { mutableStateOf<List<Book>>(emptyList()) }
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        books = getBooks()
+    }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -52,12 +71,22 @@ fun Books(navController: NavController) {
                 }
             }
         ) { paddingValues ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
+            PullToRefreshBox(
+                isRefreshing = isRefreshing,
+                onRefresh = {
+                    coroutineScope.launch {
+                        isRefreshing = true
+                        books = getBooks()
+                        isRefreshing = false
+                    }
+                },
+                modifier = Modifier.padding(paddingValues)
             ) {
-                // content
+                LazyColumn {
+                    items(books) { book ->
+                        // book card
+                    }
+                }
             }
         }
     }

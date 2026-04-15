@@ -80,3 +80,9 @@ suspend fun sendBookData (book: Book) {
     SupabaseClient.supabase.postgrest["books"]
         .insert(book)
 }
+
+suspend fun getBooks(): List<Book> {
+    return SupabaseClient.supabase.postgrest["books"]
+        .select()
+        .decodeList<Book>()
+}
