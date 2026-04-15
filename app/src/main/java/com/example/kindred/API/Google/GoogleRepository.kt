@@ -1,4 +1,4 @@
-package com.example.kindred
+package com.example.kindred.API.Google
 
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -32,7 +32,7 @@ class GoogleRepository {
         .create(GoogleAPIService::class.java)
 
     suspend fun getBookData(title: String): List<BookItem> {
-        return api.getBooksByTitle(title).items
+        return api.getBooksByTitle(title).items ?: emptyList()
     }
 }
 

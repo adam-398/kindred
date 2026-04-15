@@ -12,6 +12,7 @@ import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Columns
 import com.example.kindred.BuildConfig
+import com.example.kindred.DataModels.Book
 
 
 /**
@@ -69,4 +70,13 @@ suspend fun loginUser(email: String, password: String): Boolean {
  */
 suspend fun logoutUser() {
     com.example.kindred.SupabaseClient.supabase.auth.signOut()
+}
+
+
+/**
+ * Sends book data to Supabase
+ */
+suspend fun sendBookData (book: Book) {
+    SupabaseClient.supabase.postgrest["books"]
+        .insert(book)
 }

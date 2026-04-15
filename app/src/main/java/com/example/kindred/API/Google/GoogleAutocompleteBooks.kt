@@ -1,4 +1,4 @@
-package com.example.kindred
+package com.example.kindred.API.Google
 
 /**
  * Data class for the Google books autocomplete API

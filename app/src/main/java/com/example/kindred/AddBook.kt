@@ -21,8 +21,9 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,6 +36,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,12 +46,18 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.kindred.API.Google.GoogleViewModel
+import com.example.kindred.DataModels.Book
+import com.example.kindred.SupabaseClient.supabase
+import io.github.jan.supabase.auth.auth
+import kotlinx.coroutines.launch
 
 /**
  * Composable function which displays the add book screen.
  *
  * @param NavHostController The navigation controller for the app.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddBook(navController: NavController) {
     var bookTitle by remember { mutableStateOf("") }
@@ -60,10 +68,15 @@ fun AddBook(navController: NavController) {
     var bookNotes by remember { mutableStateOf("") }
     var isFavourite by remember { mutableStateOf(false) }
     var closeAddBook by remember { mutableStateOf(false) }
+    var status by remember { mutableStateOf("wishlist") }
+
 
     val viewModel: GoogleViewModel = viewModel()
     val bookSuggestions by viewModel.bookData.collectAsState()
 
+    val coroutineScope = rememberCoroutineScope()
+
+    var isLoading by remember { mutableStateOf(false) }
 
 
 
@@ -113,7 +126,7 @@ fun AddBook(navController: NavController) {
                             )
                         }
                         Text(
-                            text = "Add books",
+                            text = "Add book",
                             modifier = Modifier.weight(1f),
                             textAlign = TextAlign.Center,
                             style = MaterialTheme
@@ -133,17 +146,37 @@ fun AddBook(navController: NavController) {
                             )
                         }
                     }
-                    Box {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        FilterChip(
+                            selected = status == "wishlist",
+                            onClick = { status = "wishlist" },
+                            label = { Text("Want to Read") }
+                        )
+                        FilterChip(
+                            selected = status == "read",
+                            onClick = { status = "read" },
+                            label = { Text("Read") }
+                        )
+                    }
+                    ExposedDropdownMenuBox(
+                        expanded = bookSuggestions.isNotEmpty(),
+                        onExpandedChange = { }
+                    ) {
                         OutlinedTextField(
                             value = bookTitle,
                             onValueChange = {
                                 bookTitle = it
                                 viewModel.fetchBookData(it)
                             },
-                            label = { Text(text = "Title") },
-                            modifier = Modifier.fillMaxWidth()
+                            label = { Text("Title") },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .menuAnchor()
                         )
-                        DropdownMenu(
+                        ExposedDropdownMenu(
                             expanded = bookSuggestions.isNotEmpty(),
                             onDismissRequest = { viewModel.clearSuggestions() }
                         ) {
@@ -153,7 +186,8 @@ fun AddBook(navController: NavController) {
                                     onClick = {
                                         bookTitle = book.volumeInfo.title
                                         bookAuthor = book.volumeInfo.authors?.firstOrNull() ?: ""
-                                        selectedBookGenres = book.volumeInfo.categories?.toSet() ?: emptySet()
+                                        selectedBookGenres =
+                                            book.volumeInfo.categories?.toSet() ?: emptySet()
                                         viewModel.clearSuggestions()
                                     }
                                 )
@@ -251,13 +285,32 @@ fun AddBook(navController: NavController) {
                             .padding(top = 10.dp)
                     )
                     Button(
-                        onClick = { /* save logic */ },
+                        onClick = {
+                            coroutineScope.launch {
+                                sendBookData(
+                                    Book(
+                                        user_id = supabase.auth.currentSessionOrNull()?.user?.id,
+                                        title = bookTitle,
+                                        author = bookAuthor,
+                                        rating = bookRating,
+                                        genres = selectedBookGenres.joinToString(", "),
+                                        themes = bookTheme,
+                                        notes = bookNotes,
+                                        status = status,
+                                        is_favourite = isFavourite
+                                    )
+                                )
+                                isLoading = false
+                                navController.popBackStack()
+                            }
+                        },
+                        enabled = !isLoading,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 16.dp),
                         shape = RoundedCornerShape(8.dp)
                     ) {
-                        Text("Save")
+                        Text(if (isLoading) "Saving..." else "Save")
                     }
                 }
             }

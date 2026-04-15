@@ -1,4 +1,4 @@
-package com.example.kindred
+package com.example.kindred.API.Google
 
 import retrofit2.http.GET
 import retrofit2.http.Query

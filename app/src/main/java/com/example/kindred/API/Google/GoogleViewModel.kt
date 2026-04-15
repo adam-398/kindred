@@ -1,4 +1,4 @@
-package com.example.kindred
+package com.example.kindred.API.Google
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

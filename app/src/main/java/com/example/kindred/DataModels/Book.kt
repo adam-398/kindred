@@ -1,0 +1,18 @@
+package com.example.kindred.DataModels
+
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Book (
+    val book_id: String? = null,
+    val user_id: String? = null,
+    val title: String? = null,
+    val author: String? = null,
+    val rating: Int? = null,
+    val genres: String? = null,
+    val themes: String? = null,
+    val notes: String? = null,
+    val status: String? = null,
+    val is_favourite: Boolean? = null
+
+)
