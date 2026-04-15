@@ -84,7 +84,7 @@ fun Books(navController: NavController) {
             ) {
                 LazyColumn {
                     items(books) { book ->
-                        // book card
+                        BookCard(book = book)
                     }
                 }
             }

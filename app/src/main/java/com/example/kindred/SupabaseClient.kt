@@ -2,6 +2,10 @@ package com.example.kindred
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.russhwolf.settings.SharedPreferencesSettings
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.SettingsSessionManager
@@ -13,6 +17,7 @@ import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Columns
 import com.example.kindred.BuildConfig
 import com.example.kindred.DataModels.Book
+import kotlin.collections.emptyList
 
 
 /**
@@ -22,6 +27,8 @@ import com.example.kindred.DataModels.Book
  */
 
 object SupabaseClient {
+
+
     lateinit var supabase: io.github.jan.supabase.SupabaseClient
         private set
 
