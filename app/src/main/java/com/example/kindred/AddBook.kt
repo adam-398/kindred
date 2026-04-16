@@ -25,6 +25,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -49,9 +50,14 @@ import androidx.navigation.NavController
 import com.example.kindred.API.Google.GoogleViewModel
 import com.example.kindred.DataModels.Book
 import com.example.kindred.SupabaseClient.supabase
+import com.example.kindred.ui.theme.Terracotta
 import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.launch
-
+@Composable
+fun bookChipColors() = FilterChipDefaults.filterChipColors(
+    selectedContainerColor = Terracotta,
+    selectedLabelColor = Color.White
+)
 /**
  * Composable function which displays the add book screen.
  *
@@ -153,12 +159,14 @@ fun AddBook(navController: NavController) {
                         FilterChip(
                             selected = status == "wishlist",
                             onClick = { status = "wishlist" },
-                            label = { Text("Want to Read") }
+                            label = { Text("Want to Read") },
+                            colors = bookChipColors()
                         )
                         FilterChip(
                             selected = status == "read",
                             onClick = { status = "read" },
-                            label = { Text("Read") }
+                            label = { Text("Read") },
+                            colors = bookChipColors()
                         )
                     }
                     ExposedDropdownMenuBox(
@@ -260,7 +268,8 @@ fun AddBook(navController: NavController) {
                                 },
                                 modifier = Modifier
                                     .width(120.dp)
-                                    .heightIn(min = 48.dp)
+                                    .heightIn(min = 48.dp),
+                                colors = bookChipColors()
                             )
                         }
                     }

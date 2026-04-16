@@ -26,6 +26,7 @@ private val DarkColorScheme = darkColorScheme(
 
 private val LightColorScheme = lightColorScheme(
     primary = Terracotta,
+    primaryContainer = Color(0xFFFFD0B5),
     onPrimary = Color.White,
     secondary = SoftSage,
     background = Color(0xFFEFDFC5),
