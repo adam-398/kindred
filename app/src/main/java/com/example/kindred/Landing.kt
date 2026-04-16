@@ -1,5 +1,9 @@
 package com.example.kindred
 
+import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,16 +32,56 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import kotlinx.coroutines.launch
 
+
+/**
+ * Composable function which displays the landing screen.
+ *
+ * @param NavHostController The navigation controller for the app.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Landing(navController: NavController) {
-
+    val importViewModel: ImportViewModel = viewModel(LocalContext.current as ComponentActivity)
     val coroutineScope = rememberCoroutineScope()
     var showLogoutDialog by remember { mutableStateOf(false) }
+
+    //Context required to access system resources
+    val context = LocalContext.current
+
+    var importMode by remember { mutableStateOf("none") }
+
+    /**
+     * Launches
+     */
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        uri?.let {
+            val allItems = parseAudibleJson(context, it)
+
+            val filteredList = when (importMode) {
+                "wishlist" -> {
+                    allItems.filter { item ->
+                        val tags = item.collectionIds ?: emptyList()
+                        tags.contains("__WISHLIST") || !tags.contains("__AYCL")
+                    }
+                }
+                "library" -> {
+                    allItems.filter { item ->
+                        item.collectionIds?.contains("__AYCL") == true
+                    }
+                }
+                else -> allItems
+            }
+
+            importViewModel.setWishList(filteredList)
+            navController.navigate("importPreview")
+        }
+    }
 
 
     Surface(
@@ -126,6 +170,38 @@ fun Landing(navController: NavController) {
                     ) {
                         Text(
                             text = "TV",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(16.dp)
+                                .wrapContentSize(Alignment.Center),
+                        )
+                    }
+                    ElevatedCard(
+                        onClick = {
+                            importMode = "wishlist"
+                            launcher.launch("application/json")
+                        },
+                        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                        modifier = Modifier.size(width = 240.dp, height = 100.dp)
+                    ) {
+                        Text(
+                            text = "Import wishlist",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(16.dp)
+                                .wrapContentSize(Alignment.Center),
+                        )
+                    }
+                    ElevatedCard(
+                        onClick = {
+                            importMode = "library"
+                            launcher.launch("application/json")
+                        },
+                        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                        modifier = Modifier.size(width = 240.dp, height = 100.dp)
+                    ) {
+                        Text(
+                            text = "Import library",
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(16.dp)

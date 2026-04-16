@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.Color
 
 
 val Terracotta = Color(0xFFD67D61)
-val WarmParchment = Color(0xFFFDFBF7)
+val WarmParchment = Color(0xFF000000)
 val DeepCharcoal = Color(0xFF1A1C1E)
 val SoftSage = Color(0xFF8DA399)
 val MutedBerry = Color(0xFF945D60)
@@ -28,11 +28,11 @@ private val LightColorScheme = lightColorScheme(
     primary = Terracotta,
     onPrimary = Color.White,
     secondary = SoftSage,
-    background = WarmParchment,
+    background = Color(0xFFEFDFC5),
     surface = Color.White,
     onBackground = DeepCharcoal,
     onSurface = DeepCharcoal,
-    surfaceVariant = Color(0xFFF2EFE9)
+    surfaceVariant = Color(0xFFEAADBF)
 )
 
 @Composable

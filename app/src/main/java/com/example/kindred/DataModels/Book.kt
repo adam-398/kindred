@@ -2,6 +2,10 @@ package com.example.kindred.DataModels
 
 import kotlinx.serialization.Serializable
 
+/**
+ * Data class representing a book.
+ *
+ */
 @Serializable
 data class Book (
     val book_id: Int? = null,

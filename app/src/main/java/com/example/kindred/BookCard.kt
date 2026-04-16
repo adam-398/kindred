@@ -67,7 +67,7 @@ fun BookCard(book: Book) {
                 Icon(
                     imageVector = Icons.Default.Star,
                     contentDescription = null,
-                    tint = Color(0xFFFFC107), // Gold color
+                    tint = Color(0xFFFFC107),
                     modifier = Modifier.size(16.dp)
                 )
                 Spacer(modifier = Modifier.width(4.dp))

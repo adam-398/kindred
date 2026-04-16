@@ -66,6 +66,9 @@ class MainActivity : ComponentActivity() {
                         composable("addBook"){
                             AddBook(navController)
                         }
+                        composable("importPreview"){
+                            ImportPreview(navController)
+                        }
                     }
                 }
             }
