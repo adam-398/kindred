@@ -5,10 +5,12 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed // Changed to itemsIndexed
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Headset
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,6 +22,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,6 +32,8 @@ fun ImportPreview(
 ) {
     val audibleItems by importViewModel.importedItems.collectAsState()
     var showLogoutDialog by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
+    var isLoading by remember { mutableStateOf(false) }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -51,6 +56,29 @@ fun ImportPreview(
                         }
                     }
                 )
+            },
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = {
+                        coroutineScope.launch {
+                            isLoading = true
+                            sendAudiobookImport(audibleItems)
+                            navController.navigate("landing") {
+                                popUpTo("landing") { inclusive = true }
+                            }
+                            isLoading = false
+                        }
+                    }
+                ) {
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp),
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                    } else {
+                        Icon(Icons.Default.Check, contentDescription = "Import")
+                    }
+                }
             }
         ) { paddingValues ->
             Box(
@@ -80,18 +108,16 @@ fun ImportPreview(
                                     }
                                 }
                             )
-
                             SwipeToDismissBox(
                                 state = dismissState,
                                 enableDismissFromStartToEnd = false,
                                 backgroundContent = {
                                     val color by animateColorAsState(
-                                        when (dismissState.targetValue) {
+                                        when (dismissState.dismissDirection) {
                                             SwipeToDismissBoxValue.EndToStart -> MaterialTheme.colorScheme.errorContainer
                                             else -> Color.Transparent
                                         }, label = "delete_anim"
                                     )
-
                                     Box(
                                         modifier = Modifier
                                             .fillMaxSize()
@@ -107,71 +133,62 @@ fun ImportPreview(
                                         )
                                     }
                                 }
-                            ) {
-                                ElevatedCard(
+                            ){
+                                Card(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                                    shape = MaterialTheme.shapes.medium
+                                        .padding(horizontal = 12.dp, vertical = 6.dp),
+                                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                                 ) {
-                                    Column(modifier = Modifier.padding(16.dp)) {
-                                        Row(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.SpaceBetween,
-                                            verticalAlignment = Alignment.Top
-                                        ) {
+                                    Row(
+                                        modifier = Modifier
+                                            .padding(16.dp)
+                                            .fillMaxWidth(),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Headset,
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.primary,
+                                            modifier = Modifier.size(40.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(16.dp))
+                                        Column(modifier = Modifier.weight(1f)) {
                                             Text(
                                                 text = item.title,
-                                                style = MaterialTheme.typography.titleLarge,
-                                                fontWeight = FontWeight.Bold,
-                                                modifier = Modifier.weight(1f),
-                                                softWrap = true
+                                                style = MaterialTheme.typography.titleMedium,
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis
                                             )
-
-                                            Spacer(modifier = Modifier.width(12.dp))
-
-                                            Surface(
-                                                color = MaterialTheme.colorScheme.secondaryContainer,
-                                                shape = MaterialTheme.shapes.small
-                                            ) {
+                                            Text(
+                                                text = "By ${item.authors.firstOrNull()?.name ?: "Unknown"}",
+                                                style = MaterialTheme.typography.bodySmall,
+                                                color = Color.Gray
+                                            )
+                                            if (!item.narrators.isNullOrEmpty()) {
                                                 Text(
-                                                    text = item.length ?: "N/A",
+                                                    text = "Narrated by ${item.narrators.firstOrNull()?.name ?: "Unknown"}",
                                                     style = MaterialTheme.typography.labelSmall,
-                                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                                                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                                                    color = MaterialTheme.colorScheme.secondary
+                                                )
+                                            }
+                                            if (!item.length.isNullOrBlank()) {
+                                                Text(
+                                                    text = item.length,
+                                                    style = MaterialTheme.typography.labelSmall,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                )
+                                            }
+                                            if (!item.blurb.isNullOrBlank()) {
+                                                Text(
+                                                    text = item.blurb,
+                                                    style = MaterialTheme.typography.bodySmall,
+                                                    maxLines = 3,
+                                                    overflow = TextOverflow.Ellipsis,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                                 )
                                             }
                                         }
-
-                                        Spacer(modifier = Modifier.height(4.dp))
-
-                                        Text(
-                                            text = "by ${item.authors.firstOrNull()?.name ?: "Unknown"}",
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            color = MaterialTheme.colorScheme.primary,
-                                            fontWeight = FontWeight.Medium
-                                        )
-
-                                        Text(
-                                            text = "Narrated by: ${item.narrators?.firstOrNull()?.name ?: "Unknown"}",
-                                            style = MaterialTheme.typography.bodySmall,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
-
-                                        HorizontalDivider(
-                                            modifier = Modifier.padding(vertical = 12.dp),
-                                            thickness = 0.5.dp,
-                                            color = MaterialTheme.colorScheme.outlineVariant
-                                        )
-
-                                        Text(
-                                            text = item.blurb ?: "No blurb available",
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            maxLines = 3,
-                                            overflow = TextOverflow.Ellipsis,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                            lineHeight = MaterialTheme.typography.bodyMedium.lineHeight * 1.2
-                                        )
                                     }
                                 }
                             }

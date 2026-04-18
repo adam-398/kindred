@@ -12,6 +12,8 @@ import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.postgrest
 import com.example.kindred.DataModels.Audiobook
 import com.example.kindred.DataModels.Book
+import com.example.kindred.DataModels.AudibleItem
+
 
 
 /**
@@ -130,4 +132,19 @@ suspend fun deleteAudiobook(audiobookId: Int) {
                 eq("audiobook_id", audiobookId)
             }
         }
+}
+
+suspend fun sendAudiobookImport(items: List<AudibleItem>) {
+    val audiobooks = items.map { item ->
+        Audiobook(
+            user_id = SupabaseClient.supabase.auth.currentSessionOrNull()?.user?.id,
+            title = item.title,
+            author = item.authors.firstOrNull()?.name,
+            narrator = item.narrators?.firstOrNull()?.name,
+            status = "wishlist",
+            is_favourite = false,
+            duration = item.length,
+        )
+    }
+    SupabaseClient.supabase.postgrest["audio_books"].insert(audiobooks)
 }

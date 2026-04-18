@@ -74,6 +74,13 @@ fun AudiobookCard(audiobook: Audiobook) {
                         color = MaterialTheme.colorScheme.secondary
                     )
                 }
+                if (!audiobook.duration.isNullOrBlank()) {
+                    Text(
+                        text = audiobook.duration,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
 
             Row(verticalAlignment = Alignment.CenterVertically) {

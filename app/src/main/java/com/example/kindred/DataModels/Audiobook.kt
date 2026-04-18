@@ -18,6 +18,7 @@ data class Audiobook (
     val themes: String? = null,
     val notes: String? = null,
     val status: String? = null,
-    val is_favourite: Boolean? = null
+    val is_favourite: Boolean? = null,
+    val duration: String? = null,
 
 )
