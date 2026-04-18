@@ -9,14 +9,14 @@ Kindred lets you log and organise your media across four categories, track what 
 
 - **Add books** - log title, author, rating, genres, themes, and notes with Google Books autocomplete
 - **Add audiobooks** - log title, author, narrator, genres, themes and notes
+- **Add movies** - log title, director, writer and stars along with genres, themes and notes
+- **Add tv shows** - log title, director, writer and stars along with genres, themes and notes
 - **Audible import** - parse and import your Audible library or wishlist from a JSON export
 - **Authentication** - email and password login via Supabase Auth
 
 ## Roadmap
 
-- Persist imported Audible data to Supabase backend
-- Movies, and TV screens
-- AI-powered recommendations based on favourites and ratings
+- AI-powered recommendations based on favourites, themes, genres with weightings of importance
 - Play Store release
 
 ## Tech Stack
