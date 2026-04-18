@@ -31,6 +31,7 @@ fun ImportPreview(
     importViewModel: ImportViewModel = viewModel(LocalContext.current as ComponentActivity)
 ) {
     val audibleItems by importViewModel.importedItems.collectAsState()
+    val importStatus by importViewModel.importStatus.collectAsState()
     var showLogoutDialog by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
     var isLoading by remember { mutableStateOf(false) }
@@ -62,7 +63,7 @@ fun ImportPreview(
                     onClick = {
                         coroutineScope.launch {
                             isLoading = true
-                            sendAudiobookImport(audibleItems)
+                            sendAudiobookImport(audibleItems, importStatus)
                             navController.navigate("landing") {
                                 popUpTo("landing") { inclusive = true }
                             }
@@ -133,7 +134,7 @@ fun ImportPreview(
                                         )
                                     }
                                 }
-                            ){
+                            ) {
                                 Card(
                                     modifier = Modifier
                                         .fillMaxWidth()

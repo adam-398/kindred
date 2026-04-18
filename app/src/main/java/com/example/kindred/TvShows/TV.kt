@@ -1,4 +1,4 @@
-package com.example.kindred
+package com.example.kindred.TvShows
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,13 +22,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
 /**
- * Composable function which displays the Movies screen.
+ * Composable function which displays the tv screen.
  *
  * @param NavHostController The navigation controller for the app.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Movies(navController: NavController) {
+fun TV(navController: NavController) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -36,7 +36,7 @@ fun Movies(navController: NavController) {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("Movies") },
+                    title = { Text("TV") },
                     modifier = Modifier.height(100.dp),
                     navigationIcon = {
                         IconButton(onClick = { navController.popBackStack() }) {

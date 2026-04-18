@@ -1,5 +1,6 @@
-package com.example.kindred
+package com.example.kindred.Movies
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -22,12 +24,8 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.ChipColors
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -35,7 +33,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,35 +44,29 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.kindred.API.Google.GoogleViewModel
-import com.example.kindred.DataModels.Book
+import com.example.kindred.ConfirmationMessage
+import com.example.kindred.DataModels.Movie
 import com.example.kindred.SupabaseClient.supabase
+import com.example.kindred.sendMovieData
 import com.example.kindred.ui.theme.MyChipColor
-import com.example.kindred.ui.theme.Terracotta
 import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.launch
 
-/**
- * Composable function which displays the add book screen.
- *
- * @param NavHostController The navigation controller for the app.
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddBook(navController: NavController) {
-    var bookTitle by remember { mutableStateOf("") }
-    var bookAuthor by remember { mutableStateOf("") }
-    var bookNarrator by remember { mutableStateOf("") }
-    var bookRating by remember { mutableStateOf(0) }
-    var selectedBookGenres by remember { mutableStateOf(setOf<String>()) }
-    var bookTheme by remember { mutableStateOf("") }
-    var bookNotes by remember { mutableStateOf("") }
+fun AddMovie(navController: NavController) {
+    var movieTitle by remember { mutableStateOf("") }
+    var movieDirector by remember { mutableStateOf("") }
+    var movieWriter by remember { mutableStateOf("") }
+    var starring by remember { mutableStateOf("") }
+    var movieRating by remember { mutableStateOf(0) }
+    var selectedMovieGenres by remember { mutableStateOf(setOf<String>()) }
+    var movieThemes by remember { mutableStateOf("") }
+    var movieNotes by remember { mutableStateOf("") }
     var isFavourite by remember { mutableStateOf(false) }
-    var closeAddBook by remember { mutableStateOf(false) }
-    var status by remember { mutableStateOf("wishlist") }
-
+    var closeAddMovie by remember { mutableStateOf(false) }
+    var status by remember { mutableStateOf("watchlist") }
 
 
     val coroutineScope = rememberCoroutineScope()
@@ -83,27 +74,24 @@ fun AddBook(navController: NavController) {
     var isLoading by remember { mutableStateOf(false) }
 
 
-
     val genreOptions = listOf(
         "Fiction", "Non-Fiction", "Sci-fi", "Fantasy", "Horror", "Mystery",
         "Thriller", "Comedy", "Drama", "Apocalyptic", "Dystopian", "Adventure"
     )
 
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
+        contentAlignment = Alignment.TopCenter
     ) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .fillMaxHeight(0.85f)
-                    .padding(8.dp),
-                shape = RoundedCornerShape(18.dp),
-            ) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+                .wrapContentHeight()
+                .padding(top = 72.dp, start = 8.dp, end = 8.dp, bottom = 8.dp),
+            shape = RoundedCornerShape(18.dp),
+        ){
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -131,7 +119,7 @@ fun AddBook(navController: NavController) {
                             )
                         }
                         Text(
-                            text = "Add book",
+                            text = "Add movie",
                             modifier = Modifier.weight(1f),
                             textAlign = TextAlign.Center,
                             style = MaterialTheme
@@ -139,7 +127,7 @@ fun AddBook(navController: NavController) {
                             textDecoration = TextDecoration.Underline
                         )
                         IconButton(
-                            onClick = { closeAddBook = true },
+                            onClick = { closeAddMovie = true },
                             modifier = Modifier
                         ) {
                             Icon(
@@ -156,31 +144,47 @@ fun AddBook(navController: NavController) {
                         horizontalArrangement = Arrangement.Center
                     ) {
                         FilterChip(
-                            selected = status == "wishlist",
-                            onClick = { status = "wishlist" },
-                            label = { Text("Want to Read") },
+                            selected = status == "watchlist",
+                            onClick = { status = "watchlist" },
+                            label = { Text("Want to watch") },
                             colors = MyChipColor()
                         )
                         FilterChip(
-                            selected = status == "read",
-                            onClick = { status = "read" },
-                            label = { Text("Read") },
+                            selected = status == "watched",
+                            onClick = { status = "watched" },
+                            label = { Text("Watched") },
                             colors = MyChipColor()
                         )
                     }
                     OutlinedTextField(
-                        value = bookTitle,
-                        onValueChange = { bookTitle = it },
+                        value = movieTitle,
+                        onValueChange = { movieTitle = it },
                         label = { Text(text = "Title") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp)
+                    )
+                    OutlinedTextField(
+                        value = starring,
+                        onValueChange = { starring = it },
+                        label = { Text(text = "Starring") },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 10.dp)
                     )
 
                     OutlinedTextField(
-                        value = bookAuthor,
-                        onValueChange = { bookAuthor = it },
-                        label = { Text(text = "Author") },
+                        value = movieDirector,
+                        onValueChange = { movieDirector = it },
+                        label = { Text(text = "Director") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp)
+                    )
+                    OutlinedTextField(
+                        value = movieWriter,
+                        onValueChange = { movieWriter = it },
+                        label = { Text(text = "Writer") },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 10.dp)
@@ -194,11 +198,11 @@ fun AddBook(navController: NavController) {
                     )
                     Row {
                         (1..5).forEach { star ->
-                            IconButton(onClick = { bookRating = star }) {
+                            IconButton(onClick = { movieRating = star }) {
                                 Icon(
                                     imageVector = Icons.Filled.Star,
                                     contentDescription = "star",
-                                    tint = if (star <= bookRating)
+                                    tint = if (star <= movieRating)
                                         MaterialTheme.colorScheme.primary
                                     else
                                         Color.Gray
@@ -225,13 +229,13 @@ fun AddBook(navController: NavController) {
                     ) {
                         genreOptions.forEach { option ->
                             FilterChip(
-                                selected = selectedBookGenres.contains(option),
+                                selected = selectedMovieGenres.contains(option),
                                 onClick = {
-                                    selectedBookGenres =
-                                        if (selectedBookGenres.contains(option)) {
-                                            selectedBookGenres - option
+                                    selectedMovieGenres =
+                                        if (selectedMovieGenres.contains(option)) {
+                                            selectedMovieGenres - option
                                         } else {
-                                            selectedBookGenres + option
+                                            selectedMovieGenres + option
                                         }
                                 },
                                 label = {
@@ -249,18 +253,16 @@ fun AddBook(navController: NavController) {
                         }
                     }
                     OutlinedTextField(
-                        value = bookTheme,
-                        onValueChange = { bookTheme = it },
-                        label = { Text(text = "Theme") },
-                        minLines = 2,
-                        maxLines = 2,
+                        value = movieThemes,
+                        onValueChange = { movieThemes = it },
+                        label = { Text(text = "Themes") },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 10.dp)
                     )
                     OutlinedTextField(
-                        value = bookNotes,
-                        onValueChange = { bookNotes = it },
+                        value = movieNotes,
+                        onValueChange = { movieNotes = it },
                         label = { Text(text = "Notes") },
                         minLines = 2,
                         maxLines = 4,
@@ -271,15 +273,17 @@ fun AddBook(navController: NavController) {
                     Button(
                         onClick = {
                             coroutineScope.launch {
-                                sendBookData(
-                                    Book(
+                                sendMovieData(
+                                    Movie(
                                         user_id = supabase.auth.currentSessionOrNull()?.user?.id,
-                                        title = bookTitle,
-                                        author = bookAuthor,
-                                        rating = bookRating,
-                                        genres = selectedBookGenres.joinToString(", "),
-                                        themes = bookTheme,
-                                        notes = bookNotes,
+                                        title = movieTitle,
+                                        director = movieDirector,
+                                        writer = movieWriter,
+                                        starring = starring,
+                                        rating = movieRating,
+                                        genres = selectedMovieGenres.joinToString(", "),
+                                        themes = movieThemes,
+                                        notes = movieNotes,
                                         status = status,
                                         is_favourite = isFavourite
                                     )
@@ -299,16 +303,16 @@ fun AddBook(navController: NavController) {
                 }
             }
         }
-    }
-    if (closeAddBook) {
+
+    if (closeAddMovie) {
         ConfirmationMessage(
-            title = "Cancel adding audiobook?",
+            title = "Cancel adding movie?",
             message = "Are you sure you want to close the entity form?",
             confirmString = "Yes",
             dismissString = "No",
             icon = null,
             onConfirm = { navController.popBackStack() },
-            onDismiss = { closeAddBook = false }
+            onDismiss = { closeAddMovie = false }
         )
     }
 }

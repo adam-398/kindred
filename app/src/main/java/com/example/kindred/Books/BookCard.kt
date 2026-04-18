@@ -1,4 +1,4 @@
-package com.example.kindred
+package com.example.kindred.Books
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Headset
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -24,66 +23,59 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.example.kindred.DataModels.Audiobook
+import com.example.kindred.DataModels.Book
 
 /**
  * Composable function which displays a book card.
  *
- * @param audiobook to display.
+ * @param book The book to display.
  */
 @Composable
-fun AudiobookCard(audiobook: Audiobook) {
+fun BookCard(book: Book) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 6.dp),
+            .padding(horizontal = 12.dp, vertical = 6.dp)
+            .clickable { /* Handle click */ },
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Icon(
-                imageVector = Icons.Default.Headset,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(40.dp)
-            )
-
-            Spacer(modifier = Modifier.width(16.dp))
-
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = audiobook.title ?: "Unknown Title",
+                    text = book.title ?: "Unknown Title",
                     style = MaterialTheme.typography.titleMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = "By ${audiobook.author ?: "Unknown Author"}",
+                    text = book.author ?: "Unknown Author",
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.Gray
                 )
-
-                if (!audiobook.narrator.isNullOrBlank()) {
+                if (!book.genres.isNullOrBlank()) {
                     Text(
-                        text = "Narrated by ${audiobook.narrator}",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.secondary
-                    )
-                }
-                if (!audiobook.duration.isNullOrBlank()) {
-                    Text(
-                        text = audiobook.duration,
-                        style = MaterialTheme.typography.labelSmall,
+                        text = book.genres,
+                        style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
+                if (!book.themes.isNullOrBlank()) {
+                    Text(
+                        text = book.themes,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
             }
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(start = 8.dp)
+            ) {
                 Icon(
                     imageVector = Icons.Default.Star,
                     contentDescription = null,
@@ -92,7 +84,7 @@ fun AudiobookCard(audiobook: Audiobook) {
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = audiobook.rating.toString(),
+                    text = book.rating.toString(),
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.Bold
                 )

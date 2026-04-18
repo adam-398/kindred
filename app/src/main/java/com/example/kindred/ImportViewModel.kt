@@ -25,4 +25,11 @@ class ImportViewModel : ViewModel() {
     fun removeItem(item: AudibleItem) {
         _importedItems.value = _importedItems.value.filter { it.asin != item.asin }
     }
+
+    private val _importStatus = MutableStateFlow("wishlist")
+    val importStatus: StateFlow<String> = _importStatus
+
+    fun setImportStatus(status: String) {
+        _importStatus.value = status
+    }
 }

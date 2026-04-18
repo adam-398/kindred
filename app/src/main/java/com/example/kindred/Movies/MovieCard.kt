@@ -1,4 +1,4 @@
-package com.example.kindred
+package com.example.kindred.Books
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.kindred.DataModels.Book
+import com.example.kindred.DataModels.Movie
 
 /**
  * Composable function which displays a book card.
@@ -31,7 +32,7 @@ import com.example.kindred.DataModels.Book
  * @param book The book to display.
  */
 @Composable
-fun BookCard(book: Book) {
+fun MovieCard(movie: Movie) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -48,26 +49,36 @@ fun BookCard(book: Book) {
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = book.title ?: "Unknown Title",
+                    text = movie.title ?: "Unknown Title",
                     style = MaterialTheme.typography.titleMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = book.author ?: "Unknown Author",
+                    text = movie.director ?: "Unknown director",
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.Gray
                 )
-                if (!book.genres.isNullOrBlank()) {
+                Text(
+                    text = movie.writer ?: "Unknown writer",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray
+                )
+                Text(
+                    text = movie.starring ?: "Unknown starring",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray
+                )
+                if (!movie.genres.isNullOrBlank()) {
                     Text(
-                        text = book.genres,
+                        text = movie.genres,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-                if (!book.themes.isNullOrBlank()) {
+                if (!movie.themes.isNullOrBlank()) {
                     Text(
-                        text = book.themes,
+                        text = movie.themes,
                         style = MaterialTheme.typography.bodySmall,
                     )
                 }
@@ -84,7 +95,7 @@ fun BookCard(book: Book) {
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = book.rating.toString(),
+                    text = movie.rating.toString(),
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.Bold
                 )

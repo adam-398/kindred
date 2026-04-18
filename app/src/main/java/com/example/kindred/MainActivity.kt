@@ -13,7 +13,14 @@ import androidx.core.view.WindowCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.kindred.Audiobooks.AddAudiobook
+import com.example.kindred.Audiobooks.AudioBooks
+import com.example.kindred.Books.AddBook
+import com.example.kindred.Books.Books
+import com.example.kindred.Movies.AddMovie
+import com.example.kindred.Movies.Movies
 import com.example.kindred.SupabaseClient.supabase
+import com.example.kindred.TvShows.TV
 import com.example.kindred.ui.theme.KindredTheme
 import io.github.jan.supabase.auth.auth
 /**
@@ -66,10 +73,12 @@ class MainActivity : ComponentActivity() {
                         composable("movies"){
                             Movies(navController)
                         }
+                        composable ("addMovie"){
+                            AddMovie(navController)
+                        }
                         composable("tv"){
                             TV(navController)
                         }
-
                         composable("importPreview"){
                             ImportPreview(navController)
                         }
