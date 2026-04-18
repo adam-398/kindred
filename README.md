@@ -13,10 +13,10 @@ Kindred lets you log and organise your media across four categories, track what 
 
 ## Roadmap
 
-Persist imported Audible data to Supabase backend
-Movies, and TV screens
-AI-powered recommendations based on favourites and ratings
-Play Store release
+- Persist imported Audible data to Supabase backend
+- Movies, and TV screens
+- AI-powered recommendations based on favourites and ratings
+- Play Store release
 
 ## Tech Stack
 
