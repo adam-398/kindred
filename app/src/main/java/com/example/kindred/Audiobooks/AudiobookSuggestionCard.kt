@@ -1,6 +1,6 @@
 package com.example.kindred.Audiobooks
 
-import com.example.kindred.DataModels.SuggestedAudiobook
+
 
 
 import androidx.compose.foundation.layout.Column
@@ -23,15 +23,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.kindred.DataModels.Audiobook
+import com.example.kindred.DataModels.AudiobookSuggestion
 
 
 /**
  * Composable function which displays a suggested audiobook card.
  *
- * @param suggestedAudiobook to display.
+ * @param audiobook to display.
  */
 @Composable
-fun SuggestionAudiobookCard(suggestedAudiobook: SuggestedAudiobook) {
+fun AudiobookSuggestionCard(suggestedAudiobook: AudiobookSuggestion) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -50,9 +53,7 @@ fun SuggestionAudiobookCard(suggestedAudiobook: SuggestedAudiobook) {
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(40.dp)
             )
-
             Spacer(modifier = Modifier.width(16.dp))
-
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = suggestedAudiobook.title ?: "Unknown Title",
@@ -65,7 +66,6 @@ fun SuggestionAudiobookCard(suggestedAudiobook: SuggestedAudiobook) {
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.Gray
                 )
-
                 if (!suggestedAudiobook.narrator.isNullOrBlank()) {
                     Text(
                         text = "Narrated by ${suggestedAudiobook.narrator}",
@@ -75,8 +75,8 @@ fun SuggestionAudiobookCard(suggestedAudiobook: SuggestedAudiobook) {
                 }
                 if (!suggestedAudiobook.reason.isNullOrBlank()) {
                     Text(
-                        text = "${suggestedAudiobook.reason}",
-                        style = MaterialTheme.typography.labelSmall,
+                        text = suggestedAudiobook.reason,
+                        style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }

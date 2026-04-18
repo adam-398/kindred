@@ -1,0 +1,70 @@
+package com.example.kindred.Audiobooks
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.kindred.DataModels.Audiobook
+import com.example.kindred.getAudiobooks
+
+@Composable
+fun AudiobookSuggestionFlow(navController: NavController) {
+    var step by remember { mutableStateOf(1) }
+    var audiobooks by remember { mutableStateOf<List<Audiobook>>(emptyList()) }
+    var selectedAudiobooks by remember { mutableStateOf(setOf<Audiobook>()) }
+    var selectedAttributes by remember { mutableStateOf(setOf<String>()) }
+    var orderedAttributes by remember { mutableStateOf(listOf<String>()) }
+
+    LaunchedEffect(Unit) {
+        audiobooks = getAudiobooks().filter { it.status == "read" }
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
+        contentAlignment = Alignment.TopCenter
+    ) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+                .wrapContentHeight()
+                .padding(top = 72.dp, start = 8.dp, end = 8.dp, bottom = 8.dp),
+            shape = RoundedCornerShape(18.dp),
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 24.dp)
+                    .verticalScroll(rememberScrollState())
+                    .imePadding(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                when (step) {
+                    1 -> { /* Step 1 - select audiobooks */ }
+                    2 -> { /* Step 2 - select attributes */ }
+                    3 -> { /* Step 3 - order attributes */ }
+                }
+            }
+        }
+    }
+}

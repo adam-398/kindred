@@ -15,6 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.kindred.Audiobooks.AddAudiobook
 import com.example.kindred.Audiobooks.AudioBooks
+import com.example.kindred.Audiobooks.AudiobookSuggestionFlow
 import com.example.kindred.Books.AddBook
 import com.example.kindred.Books.Books
 import com.example.kindred.Movies.AddMovie
@@ -69,6 +70,9 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("audiobooks"){
                             AudioBooks(navController)
+                        }
+                        composable("audiobookSuggestions") {
+                            AudiobookSuggestionFlow(navController)
                         }
                         composable("movies"){
                             Movies(navController)

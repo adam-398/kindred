@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.example.kindred.DataModels.AudibleItem
 import com.example.kindred.DataModels.Audiobook
+import com.example.kindred.DataModels.AudiobookSuggestion
 import com.example.kindred.DataModels.Book
 import com.example.kindred.DataModels.Movie
 import com.example.kindred.DataModels.TvShow
@@ -209,5 +210,26 @@ suspend fun deleteTvShow(tvShowId: Int) {
             filter {
                 eq("tv_show_id", tvShowId)
             }
+        }
+}
+
+/**
+ * Gets audiobook suggestion from Supabase
+ */
+suspend fun getAudiobookSuggestions(): List<AudiobookSuggestion> {
+    return SupabaseClient.supabase.postgrest["suggestions"]
+        .select {
+            filter { eq("entity_type", "audiobook") }
+        }
+        .decodeList<AudiobookSuggestion>()
+}
+
+/**
+ * deletes the audiobook suggestion from Supabase
+ */
+suspend fun deleteAudiobookSuggestion(suggestionId: Int) {
+    SupabaseClient.supabase.postgrest["suggestions"]
+        .delete {
+            filter { eq("suggestion_id", suggestionId) }
         }
 }

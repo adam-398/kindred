@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
  *
  */
 @Serializable
-data class SuggestedAudiobook (
+data class AudiobookSuggestion (
     val suggestion_id: Int? = null,
     val user_id: String? = null,
     val title: String? = null,
