@@ -1,18 +1,22 @@
 # Kindred
 A media tracking app for movies, TV shows, books, and audiobooks — built with Kotlin and Jetpack Compose.
 
-Kindred lets you log and organise your media across four categories, track what you have watched or read, manage wishlists, and import your existing Audible library directly from a JSON export. Authentication and data storage are handled via Supabase, keeping your collection synced across devices.
+Kindred lets you log and organise your media across four categories, track what you have watched or read, manage wishlists, and import your existing Audible library directly from a JSON export. Authentication and data storage are handled via Supabase.
 
-## Features
+> **Note: This project is actively in development. Current functionality is outlined below.**
 
-- **Books & Audiobooks** — log titles, authors, ratings, genres, themes, and notes
-- **Movies & TV** — track watched status and personal ratings
-- **Google Books autocomplete** — title search with live suggestions to speed up adding entries
-- **Audible import** — parse and import your Audible library or wishlist directly from a JSON export
+## Current Features
+
+- **Add books** — log title, author, rating, genres, themes, and notes with Google Books autocomplete
+- **Audible import** — parse and import your Audible library or wishlist from a JSON export
 - **Authentication** — email and password login via Supabase Auth
-- **Cloud storage** — all data persisted to Supabase per user account
-- **Wishlist & read/watched status** — filter and manage your backlog separately from completed entries
-- **Favourites** — mark any entry as a favourite
+
+## Roadmap
+
+- [ ] Persist imported Audible data to Supabase backend
+- [ ] Audiobooks, Movies, and TV screens
+- [ ] AI-powered recommendations based on favourites and ratings
+- [ ] Play Store release
 
 ## Tech Stack
 
@@ -34,6 +38,4 @@ Kindred lets you log and organise your media across four categories, track what 
 
 ## Getting Started
 
-This is a university project — the repository is available privately upon request.
-
-The project requires a Supabase project with the following tables: `books`, `audiobooks`, `movies`, `tv`. A `.env` or local config file with your Supabase URL and anon key is needed to build locally.
+This is a personal project — the repository is available privately upon request.
