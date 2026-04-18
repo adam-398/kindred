@@ -58,8 +58,20 @@ fun BookCard(book: Book) {
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.Gray
                 )
+                if (!book.genres.isNullOrBlank()) {
+                    Text(
+                        text = book.genres,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                if (!book.themes.isNullOrBlank()) {
+                    Text(
+                        text = book.themes,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
             }
-
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(start = 8.dp)

@@ -8,21 +8,20 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-
 val Terracotta = Color(0xFFD67D61)
-val WarmParchment = Color(0xFF000000)
 val DeepCharcoal = Color(0xFF1A1C1E)
 val SoftSage = Color(0xFF8DA399)
-val MutedBerry = Color(0xFF945D60)
+
 private val DarkColorScheme = darkColorScheme(
     primary = Terracotta,
     onPrimary = Color.White,
     secondary = SoftSage,
-    background = DeepCharcoal,
-    surface = Color(0xFF252729),
-    onBackground = Color(0xFFE2E2E6),
-    onSurface = Color(0xFFE2E2E6),
-    surfaceVariant = Color(0xFF44474A)
+    background = Color(0xFF1C1917),      // warm dark brown, not cold grey
+    surface = Color(0xFF242120),          // slightly lighter warm brown
+    onBackground = Color(0xFFEDE0D4),     // warm off-white
+    onSurface = Color(0xFFEDE0D4),
+    surfaceVariant = Color(0xFF3A3330),   // warm muted tone for cards
+    onSurfaceVariant = Color(0xFFD0C4B8)
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -30,11 +29,12 @@ private val LightColorScheme = lightColorScheme(
     primaryContainer = Color(0xFFFFD0B5),
     onPrimary = Color.White,
     secondary = SoftSage,
-    background = Color(0xFFEFDFC5),
-    surface = Color.White,
+    background = Color(0xFFF5EDE3),       // soft warm white
+    surface = Color(0xFFFAF4EE),          // slightly lighter warm white
     onBackground = DeepCharcoal,
     onSurface = DeepCharcoal,
-    surfaceVariant = Color(0xFFEAADBF)
+    surfaceVariant = Color(0xFFEDE0D4),   // warm beige replacing the pink
+    onSurfaceVariant = Color(0xFF5C4A3A)  // warm dark brown for secondary text
 )
 
 @Composable

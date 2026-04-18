@@ -90,6 +90,20 @@ suspend fun getBooks(): List<Book> {
         .select()
         .decodeList<Book>()
 }
+/**
+ * Deletes book from Supabase
+ */
+suspend fun deleteBook(bookId: Int) {
+    SupabaseClient.supabase.postgrest["books"]
+        .delete {
+            filter {
+                eq("book_id", bookId)
+            }
+        }
+}
+
+
+
 
 /**
  * Sends audiobook data to Supabase
@@ -105,4 +119,15 @@ suspend fun getAudiobooks(): List<Audiobook> {
     return SupabaseClient.supabase.postgrest["audio_books"]
         .select()
         .decodeList<Audiobook>()
+}
+/**
+ * Deletes audiobook from Supabase
+ */
+suspend fun deleteAudiobook(audiobookId: Int) {
+    SupabaseClient.supabase.postgrest["audio_books"]
+        .delete {
+            filter {
+                eq("audiobook_id", audiobookId)
+            }
+        }
 }

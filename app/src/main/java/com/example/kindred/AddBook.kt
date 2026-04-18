@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -107,7 +108,8 @@ fun AddBook(navController: NavController) {
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(horizontal = 16.dp, vertical = 24.dp)
-                        .verticalScroll(rememberScrollState()),
+                        .verticalScroll(rememberScrollState())
+                        .imePadding(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Row(
@@ -166,6 +168,14 @@ fun AddBook(navController: NavController) {
                             colors = MyChipColor()
                         )
                     }
+                    OutlinedTextField(
+                        value = bookTitle,
+                        onValueChange = { bookTitle = it },
+                        label = { Text(text = "Title") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp)
+                    )
 
                     OutlinedTextField(
                         value = bookAuthor,
