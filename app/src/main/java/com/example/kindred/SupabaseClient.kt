@@ -2,10 +2,6 @@ package com.example.kindred
 
 import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import com.russhwolf.settings.SharedPreferencesSettings
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.SettingsSessionManager
@@ -14,10 +10,8 @@ import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.postgrest
-import io.github.jan.supabase.postgrest.query.Columns
-import com.example.kindred.BuildConfig
+import com.example.kindred.DataModels.Audiobook
 import com.example.kindred.DataModels.Book
-import kotlin.collections.emptyList
 
 
 /**
@@ -88,8 +82,27 @@ suspend fun sendBookData (book: Book) {
         .insert(book)
 }
 
+/**
+ * Gets all books from Supabase
+ */
 suspend fun getBooks(): List<Book> {
     return SupabaseClient.supabase.postgrest["books"]
         .select()
         .decodeList<Book>()
+}
+
+/**
+ * Sends audiobook data to Supabase
+ */
+suspend fun sendAudiobookData (audioBook: Audiobook) {
+    SupabaseClient.supabase.postgrest["audio_books"]
+        .insert(audioBook)
+}
+/**
+ * Gets all audiobooks from Supabase
+ */
+suspend fun getAudiobooks(): List<Audiobook> {
+    return SupabaseClient.supabase.postgrest["audio_books"]
+        .select()
+        .decodeList<Audiobook>()
 }

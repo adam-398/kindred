@@ -51,11 +51,17 @@ class MainActivity : ComponentActivity() {
                         composable("landing") {
                             Landing(navController)
                         }
+                        composable("addBook"){
+                            AddBook(navController)
+                        }
                         composable("books"){
                             Books(navController)
                         }
+                        composable("addAudiobook"){
+                            AddAudiobook(navController)
+                        }
                         composable("audiobooks"){
-                            Audiobooks(navController)
+                            AudioBooks(navController)
                         }
                         composable("movies"){
                             Movies(navController)
@@ -63,9 +69,7 @@ class MainActivity : ComponentActivity() {
                         composable("tv"){
                             TV(navController)
                         }
-                        composable("addBook"){
-                            AddBook(navController)
-                        }
+
                         composable("importPreview"){
                             ImportPreview(navController)
                         }

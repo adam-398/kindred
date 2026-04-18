@@ -21,12 +21,8 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.ChipColors
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -34,7 +30,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,24 +41,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.kindred.API.Google.GoogleViewModel
-import com.example.kindred.DataModels.Book
+import com.example.kindred.DataModels.Audiobook
 import com.example.kindred.SupabaseClient.supabase
 import com.example.kindred.ui.theme.MyChipColor
-import com.example.kindred.ui.theme.Terracotta
 import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.launch
 
 /**
- * Composable function which displays the add book screen.
+ * Composable function which displays the add audiobook screen.
  *
  * @param NavHostController The navigation controller for the app.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddBook(navController: NavController) {
+fun AddAudiobook(navController: NavController) {
     var bookTitle by remember { mutableStateOf("") }
     var bookAuthor by remember { mutableStateOf("") }
     var bookNarrator by remember { mutableStateOf("") }
@@ -72,15 +64,12 @@ fun AddBook(navController: NavController) {
     var bookTheme by remember { mutableStateOf("") }
     var bookNotes by remember { mutableStateOf("") }
     var isFavourite by remember { mutableStateOf(false) }
-    var closeAddBook by remember { mutableStateOf(false) }
+    var closeAddAudiobook by remember { mutableStateOf(false) }
     var status by remember { mutableStateOf("wishlist") }
-
-
 
     val coroutineScope = rememberCoroutineScope()
 
     var isLoading by remember { mutableStateOf(false) }
-
 
 
     val genreOptions = listOf(
@@ -129,7 +118,7 @@ fun AddBook(navController: NavController) {
                             )
                         }
                         Text(
-                            text = "Add book",
+                            text = "Add audiobook",
                             modifier = Modifier.weight(1f),
                             textAlign = TextAlign.Center,
                             style = MaterialTheme
@@ -137,7 +126,7 @@ fun AddBook(navController: NavController) {
                             textDecoration = TextDecoration.Underline
                         )
                         IconButton(
-                            onClick = { closeAddBook = true },
+                            onClick = { closeAddAudiobook = true },
                             modifier = Modifier
                         ) {
                             Icon(
@@ -166,11 +155,26 @@ fun AddBook(navController: NavController) {
                             colors = MyChipColor()
                         )
                     }
-
+                    OutlinedTextField(
+                        value = bookTitle,
+                        onValueChange = { bookTitle = it },
+                        label = { Text(text = "Title") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp)
+                    )
                     OutlinedTextField(
                         value = bookAuthor,
                         onValueChange = { bookAuthor = it },
                         label = { Text(text = "Author") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp)
+                    )
+                    OutlinedTextField(
+                        value = bookNarrator,
+                        onValueChange = { bookNarrator = it },
+                        label = { Text(text = "Narrator") },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 10.dp)
@@ -261,11 +265,12 @@ fun AddBook(navController: NavController) {
                     Button(
                         onClick = {
                             coroutineScope.launch {
-                                sendBookData(
-                                    Book(
+                                sendAudiobookData(
+                                    Audiobook(
                                         user_id = supabase.auth.currentSessionOrNull()?.user?.id,
                                         title = bookTitle,
                                         author = bookAuthor,
+                                        narrator = bookNarrator,
                                         rating = bookRating,
                                         genres = selectedBookGenres.joinToString(", "),
                                         themes = bookTheme,
@@ -290,7 +295,7 @@ fun AddBook(navController: NavController) {
             }
         }
     }
-    if (closeAddBook) {
+    if (closeAddAudiobook) {
         ConfirmationMessage(
             title = "Cancel adding audiobook?",
             message = "Are you sure you want to close the entity form?",
@@ -298,7 +303,7 @@ fun AddBook(navController: NavController) {
             dismissString = "No",
             icon = null,
             onConfirm = { navController.popBackStack() },
-            onDismiss = { closeAddBook = false }
+            onDismiss = { closeAddAudiobook = false }
         )
     }
 }

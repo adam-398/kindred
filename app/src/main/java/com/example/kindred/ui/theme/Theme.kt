@@ -1,6 +1,7 @@
 package com.example.kindred.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -49,3 +50,8 @@ fun KindredTheme(
         content = content
     )
 }
+@Composable
+fun MyChipColor() = FilterChipDefaults.filterChipColors(
+    selectedContainerColor = Terracotta,
+    selectedLabelColor = Color.White
+)
