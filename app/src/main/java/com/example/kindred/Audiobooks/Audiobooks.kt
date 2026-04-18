@@ -8,10 +8,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -44,7 +46,14 @@ import com.example.kindred.DataModels.Audiobook
 import com.example.kindred.deleteAudiobook
 import com.example.kindred.getAudiobooks
 import kotlinx.coroutines.launch
+import kotlin.collections.filter
 
+
+/**
+ * Composable function which displays the audiobooks screen.
+ *
+ * @param NavHostController The navigation controller for the app.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AudioBooks(navController: NavController) {
@@ -54,11 +63,17 @@ fun AudioBooks(navController: NavController) {
     val coroutineScope = rememberCoroutineScope()
 
     var selectedTab by remember { mutableStateOf(0) }
-    val tabs = listOf("Wishlist", "Listened to")
+    val tabs = listOf("Wishlist", "Listened to", "Suggestions")
+
+    var suggestions by remember { mutableStateOf<List<Suggestion>>(emptyList()) }
+
+    var selectedAudiobooks by remember { mutableStateOf(setOf<Audiobook>()) }
 
     LaunchedEffect(Unit) {
         audiobooks = getAudiobooks()
+        suggestions = getSuggestions("audiobook")
     }
+
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -77,8 +92,14 @@ fun AudioBooks(navController: NavController) {
                 )
             },
             floatingActionButton = {
-                FloatingActionButton(onClick = { navController.navigate("addAudiobook") }) {
-                    Icon(Icons.Default.Add, contentDescription = "Add Audiobook")
+                if (selectedTab == 2) {
+                    FloatingActionButton(onClick = { navController.navigate("audiobookSuggestions") }) {
+                        Icon(Icons.Default.AutoAwesome, contentDescription = "Get Suggestions")
+                    }
+                } else {
+                    FloatingActionButton(onClick = { navController.navigate("addAudiobook") }) {
+                        Icon(Icons.Default.Add, contentDescription = "Add Audiobook")
+                    }
                 }
             }
         ) { paddingValues ->
@@ -106,54 +127,45 @@ fun AudioBooks(navController: NavController) {
                         }
                     },
                 ) {
-                    LazyColumn {
-                        items(
-                            audiobooks.filter {
-                                if (selectedTab == 0) it.status == "wishlist"
-                                else it.status == "read"
-                            },
-                            key = { it.book_id!! }
-                        ) { audiobook ->
-                            val dismissState = rememberSwipeToDismissBoxState(
-                                confirmValueChange = { direction ->
-                                    if (direction == SwipeToDismissBoxValue.EndToStart) {
-                                        coroutineScope.launch {
-                                            deleteAudiobook(audiobook.book_id!!)
-                                            audiobooks = getAudiobooks()
+                    if (selectedTab == 2) {
+                        // Suggestions tab
+                        LazyColumn {
+                            items(
+                                suggestions.filter { it.entity_type == "audiobook" },
+                                key = { it.suggestion_id!! }
+                            ) { suggestion ->
+                                val dismissState = rememberSwipeToDismissBoxState(
+                                    confirmValueChange = { direction ->
+                                        if (direction == SwipeToDismissBoxValue.EndToStart) {
+                                            coroutineScope.launch {
+                                                deleteSuggestion(suggestion.suggestion_id!!)
+                                                suggestions = getSuggestions("audiobook")
+                                            }
+                                            true
+                                        } else {
+                                            false
                                         }
-                                        true
-                                    } else {
-                                        false
                                     }
+                                )
+                                SwipeToDismissBox(
+                                    state = dismissState,
+                                    enableDismissFromStartToEnd = false,
+                                    backgroundContent = { /* your existing delete background */ }
+                                ) {
+                                    SuggestionCard(suggestion = suggestion)
                                 }
-                            )
-                            SwipeToDismissBox(
-                                state = dismissState,
-                                enableDismissFromStartToEnd = false,
-                                backgroundContent = {
-                                    val color by animateColorAsState(
-                                        when (dismissState.targetValue) {
-                                            SwipeToDismissBoxValue.EndToStart -> MaterialTheme.colorScheme.errorContainer
-                                            else -> Color.Transparent
-                                        }, label = "delete_anim"
-                                    )
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .padding(horizontal = 16.dp, vertical = 8.dp)
-                                            .background(color, MaterialTheme.shapes.medium),
-                                        contentAlignment = Alignment.CenterEnd
-                                    ) {
-                                        Icon(
-                                            Icons.Default.Delete,
-                                            contentDescription = "Delete",
-                                            modifier = Modifier.padding(end = 24.dp),
-                                            tint = MaterialTheme.colorScheme.onErrorContainer
-                                        )
-                                    }
-                                }
-                            ) {
-                                AudiobookCard(audiobook = audiobook)
+                            } as @Composable (LazyItemScope.(index: Int) -> Unit)
+                        }
+                    } else {
+                        LazyColumn {
+                            items(
+                                audiobooks.filter {
+                                    if (selectedTab == 0) it.status == "wishlist"
+                                    else it.status == "read"
+                                },
+                                key = { it.book_id!! }
+                            ) { audiobook ->
+                                // your existing swipe to dismiss + AudiobookCard
                             }
                         }
                     }
