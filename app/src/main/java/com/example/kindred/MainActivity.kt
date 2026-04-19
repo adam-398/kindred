@@ -21,6 +21,7 @@ import com.example.kindred.Books.Books
 import com.example.kindred.Movies.AddMovie
 import com.example.kindred.Movies.Movies
 import com.example.kindred.SupabaseClient.supabase
+import com.example.kindred.TvShows.AddTvShow
 import com.example.kindred.TvShows.TV
 import com.example.kindred.ui.theme.KindredTheme
 import io.github.jan.supabase.auth.auth
@@ -82,6 +83,9 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("tv"){
                             TV(navController)
+                        }
+                        composable("addTvShow") {
+                            AddTvShow(navController)
                         }
                         composable("importPreview"){
                             ImportPreview(navController)
