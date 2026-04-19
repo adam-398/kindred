@@ -6,6 +6,7 @@ import com.example.kindred.DataModels.AudibleItem
 import com.example.kindred.DataModels.Audiobook
 import com.example.kindred.DataModels.AudiobookSuggestion
 import com.example.kindred.DataModels.Book
+import com.example.kindred.DataModels.BookSuggestion
 import com.example.kindred.DataModels.Movie
 import com.example.kindred.DataModels.TvShow
 import com.russhwolf.settings.SharedPreferencesSettings
@@ -107,6 +108,27 @@ suspend fun deleteBook(bookId: Int) {
         }
 }
 
+/**
+ * Gets book suggestion from Supabase
+ */
+suspend fun getBookSuggestions(): List<BookSuggestion> {
+    return SupabaseClient.supabase.postgrest["suggestions"]
+        .select {
+            filter { eq("entity_type", "book") }
+        }
+        .decodeList<BookSuggestion>()
+}
+
+/**
+ * deletes the book suggestion from Supabase
+ */
+suspend fun deleteBookSuggestion(suggestionId: Int) {
+    SupabaseClient.supabase.postgrest["suggestions"]
+        .delete {
+            filter { eq("suggestion_id", suggestionId) }
+        }
+}
+
 
 /**
  * Sends audiobook data to Supabase
@@ -153,6 +175,18 @@ suspend fun sendAudiobookImport(items: List<AudibleItem>, status: String) {
         )
     }
     SupabaseClient.supabase.postgrest["audio_books"].insert(audiobooks)
+}
+
+
+/**
+ * Gets audiobook suggestion from Supabase
+ */
+suspend fun getAudiobookSuggestions(): List<AudiobookSuggestion> {
+    return SupabaseClient.supabase.postgrest["suggestions"]
+        .select {
+            filter { eq("entity_type", "audiobook") }
+        }
+        .decodeList<AudiobookSuggestion>()
 }
 
 /**
@@ -213,16 +247,6 @@ suspend fun deleteTvShow(tvShowId: Int) {
         }
 }
 
-/**
- * Gets audiobook suggestion from Supabase
- */
-suspend fun getAudiobookSuggestions(): List<AudiobookSuggestion> {
-    return SupabaseClient.supabase.postgrest["suggestions"]
-        .select {
-            filter { eq("entity_type", "audiobook") }
-        }
-        .decodeList<AudiobookSuggestion>()
-}
 
 /**
  * deletes the audiobook suggestion from Supabase

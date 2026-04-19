@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -42,9 +43,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.kindred.DataModels.Book
+import com.example.kindred.DataModels.BookSuggestion
 import com.example.kindred.deleteBook
+import com.example.kindred.deleteBookSuggestion
+import com.example.kindred.getBookSuggestions
 import com.example.kindred.getBooks
 import kotlinx.coroutines.launch
+import kotlin.collections.emptyList
 
 /**
  * Composable function which displays the books screen.
@@ -57,13 +62,15 @@ fun Books(navController: NavController) {
 
     var isRefreshing by remember { mutableStateOf(false) }
     var books by remember { mutableStateOf<List<Book>>(emptyList()) }
+    var suggestions by remember { mutableStateOf<List<BookSuggestion>>(emptyList()) }
     val coroutineScope = rememberCoroutineScope()
 
     var selectedTab by remember { mutableStateOf(0) }
-    val tabs = listOf("Wishlist", "Read")
+    val tabs = listOf("Wishlist", "Read", "Suggestions")
 
     LaunchedEffect(Unit) {
         books = getBooks()
+        suggestions = getBookSuggestions()
     }
 
     Surface(
@@ -83,12 +90,16 @@ fun Books(navController: NavController) {
                 )
             },
             floatingActionButton = {
-                FloatingActionButton(onClick = { navController.navigate("addBook") }) {
-                    Icon(Icons.Default.Add, contentDescription = "Add Book")
+                if (selectedTab == 2) {
+                    FloatingActionButton(onClick = { navController.navigate("bookSuggestions") }) {
+                        Icon(Icons.Default.AutoAwesome, contentDescription = "Get Suggestions")
+                    }
+                } else {
+                    FloatingActionButton(onClick = { navController.navigate("addBook") }) {
+                        Icon(Icons.Default.Add, contentDescription = "Add Book")
+                    }
                 }
             }
-
-
         ) { paddingValues ->
             Column(
                 modifier = Modifier
@@ -109,7 +120,11 @@ fun Books(navController: NavController) {
                     onRefresh = {
                         coroutineScope.launch {
                             isRefreshing = true
-                            books = getBooks()
+                            if (selectedTab == 2) {
+                                suggestions = getBookSuggestions()
+                            } else {
+                                books = getBooks()
+                            }
                             isRefreshing = false
                         }
                     },
@@ -117,54 +132,105 @@ fun Books(navController: NavController) {
                         .fillMaxSize()
                         .imePadding()
                 ) {
-                    LazyColumn {
-                        items(
-                            books.filter {
-                                if (selectedTab == 0) it.status == "wishlist"
-                                else it.status == "read"
-                            },
-                            key = { it.book_id!! }
-                        ) { book ->
-                            val dismissState = rememberSwipeToDismissBoxState(
-                                confirmValueChange = { direction ->
-                                    if (direction == SwipeToDismissBoxValue.EndToStart) {
-                                        coroutineScope.launch {
-                                            deleteBook(book.book_id!!)
-                                            books = getBooks()
+                    if (selectedTab == 2) {
+                        LazyColumn {
+                            items(
+                                suggestions,
+                                key = { it.suggestion_id!! }
+                            ) { suggestion ->
+                                val dismissState = rememberSwipeToDismissBoxState(
+                                    confirmValueChange = { direction ->
+                                        if (direction == SwipeToDismissBoxValue.EndToStart) {
+                                            coroutineScope.launch {
+                                                deleteBookSuggestion(suggestion.suggestion_id!!)
+                                                suggestions = getBookSuggestions()
+                                            }
+                                            true
+                                        } else {
+                                            false
                                         }
-                                        true
-                                    } else {
-                                        false
                                     }
-                                }
-                            )
-                            SwipeToDismissBox(
-                                state = dismissState,
-                                enableDismissFromStartToEnd = false,
-                                backgroundContent = {
-                                    val color by animateColorAsState(
-                                        when (dismissState.targetValue) {
-                                            SwipeToDismissBoxValue.EndToStart -> MaterialTheme.colorScheme.errorContainer
-                                            else -> Color.Transparent
-                                        }, label = "delete_anim"
-                                    )
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .padding(horizontal = 16.dp, vertical = 8.dp)
-                                            .background(color, MaterialTheme.shapes.medium),
-                                        contentAlignment = Alignment.CenterEnd
-                                    ) {
-                                        Icon(
-                                            Icons.Default.Delete,
-                                            contentDescription = "Delete",
-                                            modifier = Modifier.padding(end = 24.dp),
-                                            tint = MaterialTheme.colorScheme.onErrorContainer
+                                )
+                                SwipeToDismissBox(
+                                    state = dismissState,
+                                    enableDismissFromStartToEnd = false,
+                                    backgroundContent = {
+                                        val color by animateColorAsState(
+                                            when (dismissState.targetValue) {
+                                                SwipeToDismissBoxValue.EndToStart -> MaterialTheme.colorScheme.errorContainer
+                                                else -> Color.Transparent
+                                            }, label = "delete_anim"
                                         )
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .padding(horizontal = 16.dp, vertical = 8.dp)
+                                                .background(color, MaterialTheme.shapes.medium),
+                                            contentAlignment = Alignment.CenterEnd
+                                        ) {
+                                            Icon(
+                                                Icons.Default.Delete,
+                                                contentDescription = "Delete",
+                                                modifier = Modifier.padding(end = 24.dp),
+                                                tint = MaterialTheme.colorScheme.onErrorContainer
+                                            )
+                                        }
                                     }
+                                ) {
+                                    BookSuggestionCard(suggestedBook = suggestion)
                                 }
-                            ) {
-                                BookCard(book = book)
+                            }
+                        }
+                    } else {
+                        LazyColumn() {
+                            items(
+                                books.filter {
+                                    if (selectedTab == 0) it.status == "wishlist"
+                                    else it.status == "read"
+                                },
+                                key = { it.book_id!! }
+                            ) { book ->
+                                val dismissState = rememberSwipeToDismissBoxState(
+                                    confirmValueChange = { direction ->
+                                        if (direction == SwipeToDismissBoxValue.EndToStart) {
+                                            coroutineScope.launch {
+                                                deleteBook(book.book_id!!)
+                                                books = getBooks()
+                                            }
+                                            true
+                                        } else {
+                                            false
+                                        }
+                                    }
+                                )
+                                SwipeToDismissBox(
+                                    state = dismissState,
+                                    enableDismissFromStartToEnd = false,
+                                    backgroundContent = {
+                                        val color by animateColorAsState(
+                                            when (dismissState.targetValue) {
+                                                SwipeToDismissBoxValue.EndToStart -> MaterialTheme.colorScheme.errorContainer
+                                                else -> Color.Transparent
+                                            }, label = "delete_anim"
+                                        )
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .padding(horizontal = 16.dp, vertical = 8.dp)
+                                                .background(color, MaterialTheme.shapes.medium),
+                                            contentAlignment = Alignment.CenterEnd
+                                        ) {
+                                            Icon(
+                                                Icons.Default.Delete,
+                                                contentDescription = "Delete",
+                                                modifier = Modifier.padding(end = 24.dp),
+                                                tint = MaterialTheme.colorScheme.onErrorContainer
+                                            )
+                                        }
+                                    }
+                                ) {
+                                    BookCard(book = book)
+                                }
                             }
                         }
                     }

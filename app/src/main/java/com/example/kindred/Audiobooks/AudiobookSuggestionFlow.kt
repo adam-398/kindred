@@ -26,6 +26,16 @@ import androidx.navigation.NavController
 import com.example.kindred.DataModels.Audiobook
 import com.example.kindred.getAudiobooks
 
+
+/**
+ * Composable function which displays the audiobook suggestion flow.
+ * Consists of 3 stages
+ * 1st the user selects 5 audiobooks to use for suggestions
+ * 2nd the user selects the attributes they want to use for suggestions
+ * 3rd the user orders the attributes
+ *
+ * @param navController to navigate to.
+ */
 @Composable
 fun AudiobookSuggestionFlow(navController: NavController) {
     var step by remember { mutableStateOf(1) }

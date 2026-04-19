@@ -60,7 +60,7 @@ fun Movies(navController: NavController) {
     val coroutineScope = rememberCoroutineScope()
 
     var selectedTab by remember { mutableStateOf(0) }
-    val tabs = listOf("Watchlist", "Watched")
+    val tabs = listOf("Watchlist", "Watched", "Suggestions")
 
     LaunchedEffect(Unit) {
         movies = getMovies()

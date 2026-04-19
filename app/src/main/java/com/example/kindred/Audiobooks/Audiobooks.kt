@@ -63,6 +63,7 @@ fun AudioBooks(navController: NavController) {
 
     LaunchedEffect(Unit) {
         audiobooks = getAudiobooks()
+        suggestions = getAudiobookSuggestions()
     }
 
     Surface(
@@ -112,7 +113,11 @@ fun AudioBooks(navController: NavController) {
                     onRefresh = {
                         coroutineScope.launch {
                             isRefreshing = true
-                            audiobooks = getAudiobooks()
+                            if (selectedTab == 2) {
+                                suggestions = getAudiobookSuggestions()
+                            } else {
+                                audiobooks = getAudiobooks()
+                            }
                             isRefreshing = false
                         }
                     },
@@ -171,7 +176,7 @@ fun AudioBooks(navController: NavController) {
                             items(
                                 audiobooks.filter {
                                     if (selectedTab == 0) it.status == "wishlist"
-                                    else it.status == "read"
+                                    else it.status == "listened"
                                 },
                                 key = { it.book_id!! }
                             ) { audiobook ->
