@@ -3,7 +3,7 @@ package com.example.kindred.DataModels
 import kotlinx.serialization.Serializable
 
 /**
- * Data class representing a suggested movie.
+ * Data class representing a suggested tv show suggestion.
  *
  */
 @Serializable
