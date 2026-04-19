@@ -1,9 +1,9 @@
 # Kindred
-A media tracking app for movies, TV shows, books, and audiobooks — built with Kotlin and Jetpack Compose.
+A media tracking app for movies, TV shows, books, and audiobooks built with Kotlin and Jetpack Compose.
 
 Kindred lets you log and organise your media across four categories, track what you have watched or read, manage wishlists, and import your existing Audible library directly from a JSON export. Authentication and data storage are handled via Supabase.
 
-> **Note: This project is actively in development. Current functionality is outlined below.**
+ **Note: This project is actively in development. Current functionality is outlined below.**
 
 ## Current Features
 
@@ -16,7 +16,7 @@ Kindred lets you log and organise your media across four categories, track what 
 
 ## Roadmap
 
-- AI-powered recommendations based on favourites, themes, genres with weightings of importance
+- AI-powered recommendations based on favourites, themes, genres with weightings of importance, API 
 - Play Store release
 
 ## Tech Stack
@@ -37,6 +37,3 @@ Kindred lets you log and organise your media across four categories, track what 
 | [Google Books API](https://developers.google.com/books) | Live title autocomplete when adding books |
 | [Supabase](https://supabase.com) | Authentication and cloud data storage |
 
-## Getting Started
-
-This is a personal project — the repository is available privately upon request.
