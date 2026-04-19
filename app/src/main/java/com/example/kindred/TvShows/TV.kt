@@ -46,8 +46,8 @@ fun TV(navController: NavController) {
                 )
             },
             floatingActionButton = {
-                FloatingActionButton(onClick = { navController.navigate("addBook") }) {
-                    Icon(Icons.Default.Add, contentDescription = "Add Book")
+                FloatingActionButton(onClick = { navController.navigate("addTvShow") }) {
+                    Icon(Icons.Default.Add, contentDescription = "Add TV show")
                 }
             }
         ) { paddingValues ->

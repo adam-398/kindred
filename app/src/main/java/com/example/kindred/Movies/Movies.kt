@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -43,9 +44,14 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.kindred.Books.MovieCard
 import com.example.kindred.DataModels.Movie
+import com.example.kindred.DataModels.MovieSuggestion
+
 import com.example.kindred.deleteMovie
+import com.example.kindred.deleteMovieSuggestion
+import com.example.kindred.getMovieSuggestions
 import com.example.kindred.getMovies
 import kotlinx.coroutines.launch
+import kotlin.collections.emptyList
 
 /**
  * Composable function which displays the Movies screen.
@@ -55,8 +61,10 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Movies(navController: NavController) {
+
     var isRefreshing by remember { mutableStateOf(false) }
     var movies by remember { mutableStateOf<List<Movie>>(emptyList()) }
+    var suggestions by remember { mutableStateOf<List<MovieSuggestion>>(emptyList()) }
     val coroutineScope = rememberCoroutineScope()
 
     var selectedTab by remember { mutableStateOf(0) }
@@ -64,6 +72,7 @@ fun Movies(navController: NavController) {
 
     LaunchedEffect(Unit) {
         movies = getMovies()
+        suggestions = getMovieSuggestions()
     }
 
     Surface(
@@ -83,12 +92,16 @@ fun Movies(navController: NavController) {
                 )
             },
             floatingActionButton = {
-                FloatingActionButton(onClick = { navController.navigate("addMovie") }) {
-                    Icon(Icons.Default.Add, contentDescription = "Add Movie")
+                if (selectedTab == 2) {
+                    FloatingActionButton(onClick = { navController.navigate("movieSuggestions") }) {
+                        Icon(Icons.Default.AutoAwesome, contentDescription = "Get Suggestions")
+                    }
+                } else {
+                    FloatingActionButton(onClick = { navController.navigate("addMovie") }) {
+                        Icon(Icons.Default.Add, contentDescription = "Add Movie")
+                    }
                 }
             }
-
-
         ) { paddingValues ->
             Column(
                 modifier = Modifier
@@ -109,7 +122,11 @@ fun Movies(navController: NavController) {
                     onRefresh = {
                         coroutineScope.launch {
                             isRefreshing = true
-                            movies = getMovies()
+                            if (selectedTab == 2) {
+                                suggestions = getMovieSuggestions()
+                            } else {
+                                movies = getMovies()
+                            }
                             isRefreshing = false
                         }
                     },
@@ -117,20 +134,18 @@ fun Movies(navController: NavController) {
                         .fillMaxSize()
                         .imePadding()
                 ) {
+                    if (selectedTab == 2) {
                     LazyColumn {
                         items(
-                            movies.filter {
-                                if (selectedTab == 0) it.status == "watchlist"
-                                else it.status == "watched"
-                            },
-                            key = { it.movie_id!! }
-                        ) { movie ->
+                            suggestions,
+                            key = { it.suggestion_id!! }
+                        ) { suggestion ->
                             val dismissState = rememberSwipeToDismissBoxState(
                                 confirmValueChange = { direction ->
                                     if (direction == SwipeToDismissBoxValue.EndToStart) {
                                         coroutineScope.launch {
-                                            deleteMovie(movie.movie_id!!)
-                                            movies = getMovies()
+                                            deleteMovieSuggestion(suggestion.suggestion_id!!)
+                                            suggestions = getMovieSuggestions()
                                         }
                                         true
                                     } else {
@@ -164,7 +179,60 @@ fun Movies(navController: NavController) {
                                     }
                                 }
                             ) {
-                                MovieCard(movie = movie)
+                                MovieSuggestionCard(suggestedMovie = suggestion)
+                            }
+                        }
+                    }
+                    } else {
+                        LazyColumn() {
+                            items(
+                                movies.filter {
+                                    if (selectedTab == 0) it.status == "watchlist"
+                                    else it.status == "watched"
+                                },
+                            key = { it.movie_id!! }
+                            ) { movie ->
+                                val dismissState = rememberSwipeToDismissBoxState(
+                                    confirmValueChange = { direction ->
+                                        if (direction == SwipeToDismissBoxValue.EndToStart) {
+                                            coroutineScope.launch {
+                                                deleteMovie(movie.movie_id!!)
+                                                movies = getMovies()
+                                            }
+                                            true
+                                        } else {
+                                            false
+                                        }
+                                    }
+                                )
+                                SwipeToDismissBox(
+                                    state = dismissState,
+                                    enableDismissFromStartToEnd = false,
+                                    backgroundContent = {
+                                        val color by animateColorAsState(
+                                            when (dismissState.targetValue) {
+                                                SwipeToDismissBoxValue.EndToStart -> MaterialTheme.colorScheme.errorContainer
+                                                else -> Color.Transparent
+                                            }, label = "delete_anim"
+                                        )
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .padding(horizontal = 16.dp, vertical = 8.dp)
+                                                .background(color, MaterialTheme.shapes.medium),
+                                            contentAlignment = Alignment.CenterEnd
+                                        ) {
+                                            Icon(
+                                                Icons.Default.Delete,
+                                                contentDescription = "Delete",
+                                                modifier = Modifier.padding(end = 24.dp),
+                                                tint = MaterialTheme.colorScheme.onErrorContainer
+                                            )
+                                        }
+                                    }
+                                ){
+                                    MovieCard(movie = movie)
+                                }
                             }
                         }
                     }

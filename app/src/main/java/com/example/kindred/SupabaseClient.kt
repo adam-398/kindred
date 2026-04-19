@@ -8,7 +8,9 @@ import com.example.kindred.DataModels.AudiobookSuggestion
 import com.example.kindred.DataModels.Book
 import com.example.kindred.DataModels.BookSuggestion
 import com.example.kindred.DataModels.Movie
+import com.example.kindred.DataModels.MovieSuggestion
 import com.example.kindred.DataModels.TvShow
+import com.example.kindred.DataModels.TvShowSuggestion
 import com.russhwolf.settings.SharedPreferencesSettings
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.SettingsSessionManager
@@ -218,6 +220,29 @@ suspend fun deleteMovie(movieId: Int) {
         }
 }
 
+
+
+/**
+ * Gets movie suggestion from Supabase
+ */
+suspend fun getMovieSuggestions(): List<MovieSuggestion> {
+    return SupabaseClient.supabase.postgrest["suggestions"]
+        .select {
+            filter { eq("entity_type", "movie") }
+        }
+        .decodeList<MovieSuggestion>()
+}
+
+/**
+ * deletes the movie suggestion from Supabase
+ */
+suspend fun deleteMovieSuggestion(suggestionId: Int) {
+    SupabaseClient.supabase.postgrest["suggestions"]
+        .delete {
+            filter { eq("suggestion_id", suggestionId) }
+        }
+}
+
 /**
  * Sends tv show data to Supabase
  */
@@ -247,6 +272,26 @@ suspend fun deleteTvShow(tvShowId: Int) {
         }
 }
 
+/**
+ * Gets tv show suggestion from Supabase
+ */
+suspend fun getTvShowSuggestions(): List<TvShowSuggestion> {
+    return SupabaseClient.supabase.postgrest["suggestions"]
+        .select {
+            filter { eq("entity_type", "tv_show") }
+        }
+        .decodeList< TvShowSuggestion>()
+}
+
+/**
+ * deletes the tv show suggestion from Supabase
+ */
+suspend fun deleteTvShowSuggestion(suggestionId: Int) {
+    SupabaseClient.supabase.postgrest["suggestions"]
+        .delete {
+            filter { eq("suggestion_id", suggestionId) }
+        }
+}
 
 /**
  * deletes the audiobook suggestion from Supabase
