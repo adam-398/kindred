@@ -1,5 +1,6 @@
 package com.example.kindred.Audiobooks
 
+import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -43,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.kindred.DataModels.Audiobook
 import com.example.kindred.DataModels.AudiobookSuggestion
+import com.example.kindred.GeminiAPI.getGeminiSuggestions
 import com.example.kindred.deleteAudiobook
 import com.example.kindred.deleteAudiobookSuggestion
 import com.example.kindred.getAudiobookSuggestions
@@ -64,6 +66,21 @@ fun AudioBooks(navController: NavController) {
     LaunchedEffect(Unit) {
         audiobooks = getAudiobooks()
         suggestions = getAudiobookSuggestions()
+
+
+        try {
+            val result = getGeminiSuggestions(
+                entities = "the road, commune, after it happened",
+                attributes = "post-apocalyptic, dark, end of the world, narrator, author",
+                genres = "sci-fi, fiction",
+                order = 1
+            )
+            Log.d("GeminiText", result)
+        } catch (e: Exception) {
+            Log.e("GeminiError", "Error: ${e.message}")
+            e.printStackTrace()
+
+        }
     }
 
     Surface(

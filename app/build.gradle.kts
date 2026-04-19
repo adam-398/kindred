@@ -73,5 +73,6 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     implementation("androidx.compose.material:material-icons-extended")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
 }
