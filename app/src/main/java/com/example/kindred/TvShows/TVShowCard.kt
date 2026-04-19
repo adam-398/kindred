@@ -1,4 +1,5 @@
-package com.example.kindred.Books
+package com.example.kindred.TvShows
+
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,14 +26,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.kindred.DataModels.Book
 import com.example.kindred.DataModels.Movie
+import com.example.kindred.DataModels.TvShow
 
 /**
  * Composable function which displays a book card.
  *
- * @param movie The book to display.
+ * @param tv show The book to display.
  */
 @Composable
-fun MovieCard(movie: Movie) {
+fun TVShowCard(tvShow: TvShow) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -49,36 +51,36 @@ fun MovieCard(movie: Movie) {
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = movie.title ?: "Unknown Title",
+                    text = tvShow.title ?: "Unknown Title",
                     style = MaterialTheme.typography.titleMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = movie.director ?: "Unknown director",
+                    text = tvShow.director ?: "Unknown director",
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.Gray
                 )
                 Text(
-                    text = movie.writer ?: "Unknown writer",
+                    text = tvShow.writer ?: "Unknown writer",
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.Gray
                 )
                 Text(
-                    text = movie.starring ?: "Unknown starring",
+                    text = tvShow.starring ?: "Unknown starring",
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.Gray
                 )
-                if (!movie.genres.isNullOrBlank()) {
+                if (!tvShow.genres.isNullOrBlank()) {
                     Text(
-                        text = movie.genres,
+                        text = tvShow.genres,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-                if (!movie.themes.isNullOrBlank()) {
+                if (!tvShow.themes.isNullOrBlank()) {
                     Text(
-                        text = movie.themes,
+                        text = tvShow.themes,
                         style = MaterialTheme.typography.bodySmall,
                     )
                 }
@@ -95,7 +97,7 @@ fun MovieCard(movie: Movie) {
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = movie.rating.toString(),
+                    text = tvShow.rating.toString(),
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.Bold
                 )
