@@ -147,13 +147,13 @@ fun AddAudiobook(navController: NavController) {
                     FilterChip(
                         selected = status == "wishlist",
                         onClick = { status = "wishlist" },
-                        label = { Text("Want to Read") },
+                        label = { Text("Want to listen to") },
                         colors = MyChipColor()
                     )
                     FilterChip(
-                        selected = status == "read",
-                        onClick = { status = "read" },
-                        label = { Text("Read") },
+                        selected = status == "listened to",
+                        onClick = { status = "listened to" },
+                        label = { Text("Listened to") },
                         colors = MyChipColor()
                     )
                 }

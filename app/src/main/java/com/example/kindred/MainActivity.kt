@@ -17,12 +17,15 @@ import com.example.kindred.Audiobooks.AddAudiobook
 import com.example.kindred.Audiobooks.AudioBooks
 import com.example.kindred.Audiobooks.AudiobookSuggestionFlow
 import com.example.kindred.Books.AddBook
+import com.example.kindred.Books.BookSuggestionFlow
 import com.example.kindred.Books.Books
 import com.example.kindred.Movies.AddMovie
+import com.example.kindred.Movies.MovieSuggestionFlow
 import com.example.kindred.Movies.Movies
 import com.example.kindred.SupabaseClient.supabase
 import com.example.kindred.TvShows.AddTvShow
 import com.example.kindred.TvShows.TV
+import com.example.kindred.TvShows.TvSuggestionFlow
 import com.example.kindred.ui.theme.KindredTheme
 import io.github.jan.supabase.auth.auth
 /**
@@ -66,6 +69,9 @@ class MainActivity : ComponentActivity() {
                         composable("books"){
                             Books(navController)
                         }
+                        composable("bookSuggestions") {
+                            BookSuggestionFlow(navController)
+                        }
                         composable("addAudiobook"){
                             AddAudiobook(navController)
                         }
@@ -81,11 +87,17 @@ class MainActivity : ComponentActivity() {
                         composable ("addMovie"){
                             AddMovie(navController)
                         }
+                        composable("movieSuggestions") {
+                            MovieSuggestionFlow(navController)
+                        }
                         composable("tv"){
                             TV(navController)
                         }
                         composable("addTvShow") {
                             AddTvShow(navController)
+                        }
+                        composable("tvShowSuggestions") {
+                            TvSuggestionFlow(navController)
                         }
                         composable("importPreview"){
                             ImportPreview(navController)

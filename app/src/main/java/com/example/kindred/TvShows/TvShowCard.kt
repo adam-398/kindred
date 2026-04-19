@@ -24,8 +24,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.example.kindred.DataModels.Book
-import com.example.kindred.DataModels.Movie
 import com.example.kindred.DataModels.TvShow
 
 /**
@@ -34,7 +32,7 @@ import com.example.kindred.DataModels.TvShow
  * @param tv show The book to display.
  */
 @Composable
-fun TVShowCard(tvShow: TvShow) {
+fun TvShowCard(tvShow: TvShow) {
     Card(
         modifier = Modifier
             .fillMaxWidth()

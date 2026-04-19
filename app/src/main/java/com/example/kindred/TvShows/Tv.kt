@@ -1,4 +1,4 @@
-package com.example.kindred.Movies
+package com.example.kindred.TvShows
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
@@ -42,37 +42,34 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.kindred.Books.MovieCard
-import com.example.kindred.DataModels.Movie
-import com.example.kindred.DataModels.MovieSuggestion
-
-import com.example.kindred.deleteMovie
-import com.example.kindred.deleteMovieSuggestion
-import com.example.kindred.getMovieSuggestions
-import com.example.kindred.getMovies
+import com.example.kindred.DataModels.TvShow
+import com.example.kindred.deleteTvShow
+import com.example.kindred.deleteTvShowSuggestion
+import com.example.kindred.getTvShowSuggestions
+import com.example.kindred.getTvShows
 import kotlinx.coroutines.launch
-import kotlin.collections.emptyList
+import com.example.kindred.DataModels.TvShowSuggestion
 
 /**
- * Composable function which displays the Movies screen.
+ * Composable function which displays the tv screen.
  *
  * @param NavHostController The navigation controller for the app.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Movies(navController: NavController) {
+fun TV(navController: NavController) {
 
     var isRefreshing by remember { mutableStateOf(false) }
-    var movies by remember { mutableStateOf<List<Movie>>(emptyList()) }
-    var suggestions by remember { mutableStateOf<List<MovieSuggestion>>(emptyList()) }
+    var tvShows by remember { mutableStateOf<List<TvShow>>(emptyList()) }
+    var suggestions by remember { mutableStateOf<List<TvShowSuggestion>>(emptyList()) }
     val coroutineScope = rememberCoroutineScope()
 
     var selectedTab by remember { mutableStateOf(0) }
     val tabs = listOf("Watchlist", "Watched", "Suggestions")
 
     LaunchedEffect(Unit) {
-        movies = getMovies()
-        suggestions = getMovieSuggestions()
+        tvShows = getTvShows()
+        suggestions = getTvShowSuggestions()
     }
 
     Surface(
@@ -82,7 +79,7 @@ fun Movies(navController: NavController) {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("Movies") },
+                    title = { Text("TV Shows") },
                     modifier = Modifier.height(100.dp),
                     navigationIcon = {
                         IconButton(onClick = { navController.popBackStack() }) {
@@ -93,12 +90,12 @@ fun Movies(navController: NavController) {
             },
             floatingActionButton = {
                 if (selectedTab == 2) {
-                    FloatingActionButton(onClick = { navController.navigate("movieSuggestions") }) {
+                    FloatingActionButton(onClick = { navController.navigate("tvShowSuggestions") }) {
                         Icon(Icons.Default.AutoAwesome, contentDescription = "Get Suggestions")
                     }
                 } else {
-                    FloatingActionButton(onClick = { navController.navigate("addMovie") }) {
-                        Icon(Icons.Default.Add, contentDescription = "Add Movie")
+                    FloatingActionButton(onClick = { navController.navigate("addTvShow") }) {
+                        Icon(Icons.Default.Add, contentDescription = "Add TV Show")
                     }
                 }
             }
@@ -123,9 +120,9 @@ fun Movies(navController: NavController) {
                         coroutineScope.launch {
                             isRefreshing = true
                             if (selectedTab == 2) {
-                                suggestions = getMovieSuggestions()
+                                suggestions = getTvShowSuggestions()
                             } else {
-                                movies = getMovies()
+                                tvShows = getTvShows()
                             }
                             isRefreshing = false
                         }
@@ -135,69 +132,17 @@ fun Movies(navController: NavController) {
                         .imePadding()
                 ) {
                     if (selectedTab == 2) {
-                    LazyColumn {
-                        items(
-                            suggestions,
-                            key = { it.suggestion_id!! }
-                        ) { suggestion ->
-                            val dismissState = rememberSwipeToDismissBoxState(
-                                confirmValueChange = { direction ->
-                                    if (direction == SwipeToDismissBoxValue.EndToStart) {
-                                        coroutineScope.launch {
-                                            deleteMovieSuggestion(suggestion.suggestion_id!!)
-                                            suggestions = getMovieSuggestions()
-                                        }
-                                        true
-                                    } else {
-                                        false
-                                    }
-                                }
-                            )
-                            SwipeToDismissBox(
-                                state = dismissState,
-                                enableDismissFromStartToEnd = false,
-                                backgroundContent = {
-                                    val color by animateColorAsState(
-                                        when (dismissState.targetValue) {
-                                            SwipeToDismissBoxValue.EndToStart -> MaterialTheme.colorScheme.errorContainer
-                                            else -> Color.Transparent
-                                        }, label = "delete_anim"
-                                    )
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .padding(horizontal = 16.dp, vertical = 8.dp)
-                                            .background(color, MaterialTheme.shapes.medium),
-                                        contentAlignment = Alignment.CenterEnd
-                                    ) {
-                                        Icon(
-                                            Icons.Default.Delete,
-                                            contentDescription = "Delete",
-                                            modifier = Modifier.padding(end = 24.dp),
-                                            tint = MaterialTheme.colorScheme.onErrorContainer
-                                        )
-                                    }
-                                }
-                            ) {
-                                MovieSuggestionCard(suggestedMovie = suggestion)
-                            }
-                        }
-                    }
-                    } else {
-                        LazyColumn() {
+                        LazyColumn {
                             items(
-                                movies.filter {
-                                    if (selectedTab == 0) it.status == "Watchlist"
-                                    else it.status == "Watched"
-                                },
-                            key = { it.movie_id!! }
-                            ) { movie ->
+                                suggestions,
+                                key = { it.suggestion_id!! }
+                            ) { suggestion ->
                                 val dismissState = rememberSwipeToDismissBoxState(
                                     confirmValueChange = { direction ->
                                         if (direction == SwipeToDismissBoxValue.EndToStart) {
                                             coroutineScope.launch {
-                                                deleteMovie(movie.movie_id!!)
-                                                movies = getMovies()
+                                                deleteTvShowSuggestion(suggestion.suggestion_id!!)
+                                                suggestions = getTvShowSuggestions()
                                             }
                                             true
                                         } else {
@@ -230,8 +175,60 @@ fun Movies(navController: NavController) {
                                             )
                                         }
                                     }
-                                ){
-                                    MovieCard(movie = movie)
+                                ) {
+                                    TvSuggestionCard(suggestedTvShow = suggestion)
+                                }
+                            }
+                        }
+                    } else {
+                        LazyColumn {
+                            items(
+                                tvShows.filter {
+                                    if (selectedTab == 0) it.status == "watchlist"
+                                    else it.status == "watched"
+                                },
+                                key = { it.tv_show_id!! }
+                            ) { tvShow ->
+                                val dismissState = rememberSwipeToDismissBoxState(
+                                    confirmValueChange = { direction ->
+                                        if (direction == SwipeToDismissBoxValue.EndToStart) {
+                                            coroutineScope.launch {
+                                                deleteTvShow(tvShow.tv_show_id!!)
+                                                tvShows = getTvShows()
+                                            }
+                                            true
+                                        } else {
+                                            false
+                                        }
+                                    }
+                                )
+                                SwipeToDismissBox(
+                                    state = dismissState,
+                                    enableDismissFromStartToEnd = false,
+                                    backgroundContent = {
+                                        val color by animateColorAsState(
+                                            when (dismissState.targetValue) {
+                                                SwipeToDismissBoxValue.EndToStart -> MaterialTheme.colorScheme.errorContainer
+                                                else -> Color.Transparent
+                                            }, label = "delete_anim"
+                                        )
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .padding(horizontal = 16.dp, vertical = 8.dp)
+                                                .background(color, MaterialTheme.shapes.medium),
+                                            contentAlignment = Alignment.CenterEnd
+                                        ) {
+                                            Icon(
+                                                Icons.Default.Delete,
+                                                contentDescription = "Delete",
+                                                modifier = Modifier.padding(end = 24.dp),
+                                                tint = MaterialTheme.colorScheme.onErrorContainer
+                                            )
+                                        }
+                                    }
+                                ) {
+                                    TvShowCard(tvShow = tvShow)
                                 }
                             }
                         }
