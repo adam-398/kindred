@@ -68,19 +68,19 @@ fun AudioBooks(navController: NavController) {
         suggestions = getAudiobookSuggestions()
 
 
-        try {
-            val result = getGeminiSuggestions(
-                entities = "the road, commune, after it happened",
-                attributes = "post-apocalyptic, dark, end of the world, narrator, author",
-                genres = "sci-fi, fiction",
-                order = 1
-            )
-            Log.d("GeminiText", result)
-        } catch (e: Exception) {
-            Log.e("GeminiError", "Error: ${e.message}")
-            e.printStackTrace()
-
-        }
+//        try {
+//            val result = getGeminiSuggestions(
+//                entities = "the road, commune, after it happened",
+//                attributes = "post-apocalyptic, dark, end of the world, narrator, author",
+//                genres = "sci-fi, fiction",
+//                order = 1
+//            )
+//            Log.d("GeminiText", result)
+//        } catch (e: Exception) {
+//            Log.e("GeminiError", "Error: ${e.message}")
+//            e.printStackTrace()
+//
+//        }
     }
 
     Surface(

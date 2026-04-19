@@ -18,13 +18,15 @@ suspend fun getGeminiSuggestions(
     entities: String,
     attributes: String,
     genres: String,
-    order: Int
+    order: List<String>
 ): String {
 
     val prompt = "Based on the following items I have enjoyed: $entities. " +
             "Focusing on these attributes: $attributes, and these genres: $genres " +
-            "Ranked by importance of: $order " +
-            "Suggest 5 similar ones i might enjoy and provide a short description of why each is appropriate."
+            "Ranked by importance of: ${order.joinToString(", ")}. " +
+            "Suggest 5 similar ones i might enjoy and provide a short description of why each is appropriate." +
+            "Return ONLY a JSON array with no markdown, no code blocks, just raw JSON in this exact format: " +
+            "[{\"title\": \"\", \"author\": \"\", \"narrator\": \"\", \"reason\": \"\"}]"
 
     val requestBody = """
         {
