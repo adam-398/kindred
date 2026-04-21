@@ -9,6 +9,10 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.toRequestBody
 import com.example.kindred.BuildConfig
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.addJsonObject
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.putJsonArray
 
 /**
  * Makes a call to the Gemini API.
@@ -28,13 +32,17 @@ suspend fun getGeminiSuggestions(
             "Return ONLY a JSON array with no markdown, no code blocks, just raw JSON in this exact format: " +
             "[{\"title\": \"\", \"author\": \"\", \"narrator\": \"\", \"reason\": \"\"}]"
 
-    val requestBody = """
-        {
-            "contents": [{
-                "parts": [{"text": "$prompt"}]
-            }]
+    val requestBody = buildJsonObject {
+        putJsonArray("contents") {
+            addJsonObject {
+                putJsonArray("parts") {
+                    addJsonObject {
+                        put("text", JsonPrimitive(prompt))
+                    }
+                }
+            }
         }
-    """.trimIndent()
+    }.toString()
 
     Log.d("GeminiTest", "API Key: ${BuildConfig.GEMINI_API_KEY}")
 

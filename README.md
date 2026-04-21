@@ -16,7 +16,7 @@ Kindred lets you log and organise your media across four categories, track what 
 
 ## Roadmap
 
-- AI-powered recommendations based on favourites, themes, genres with weightings of importance, API 
+- AI-powered recommendations based on favourites, themes, genres with weightings of importance, powered by Google Gemini 
 - Play Store release
 
 ## Tech Stack

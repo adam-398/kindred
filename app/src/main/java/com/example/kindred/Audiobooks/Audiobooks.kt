@@ -193,7 +193,7 @@ fun AudioBooks(navController: NavController) {
                             items(
                                 audiobooks.filter {
                                     if (selectedTab == 0) it.status == "wishlist"
-                                    else it.status == "listened"
+                                    else it.status == "listened to"
                                 },
                                 key = { it.book_id!! }
                             ) { audiobook ->
