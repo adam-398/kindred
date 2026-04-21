@@ -18,6 +18,7 @@ Kindred lets you log and organise your media across four categories, track what 
 
 - AI-powered recommendations based on favourites, themes, genres with weightings of importance, powered by Google Gemini 
 - Play Store release
+- Autocomplete for audiobooks, movies and tv
 
 ## Tech Stack
 

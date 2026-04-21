@@ -302,3 +302,12 @@ suspend fun deleteAudiobookSuggestion(suggestionId: Int) {
             filter { eq("suggestion_id", suggestionId) }
         }
 }
+
+
+/**
+ * Sends audiobook suggestion to Supabase
+ */
+suspend fun sendAudiobookSuggestion(audiobookSuggestion: AudiobookSuggestion) {
+    SupabaseClient.supabase.postgrest["suggestions"]
+        .insert(audiobookSuggestion)
+}

@@ -61,7 +61,7 @@ fun AudioBooks(navController: NavController) {
     val coroutineScope = rememberCoroutineScope()
 
     var selectedTab by remember { mutableStateOf(0) }
-    val tabs = listOf("Wishlist", "Listened to", "Suggestions", "Completed suggestions")
+    val tabs = listOf("Wishlist", "Listened to", "Suggestions")
 
     LaunchedEffect(Unit) {
         audiobooks = getAudiobooks()
