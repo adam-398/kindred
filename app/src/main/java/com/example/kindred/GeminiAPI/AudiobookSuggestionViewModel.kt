@@ -50,6 +50,10 @@ class AudiobookSuggestionViewModel : ViewModel() {
         _attributeOrder.value = order
     }
 
+
+    /**
+     * fetches suggestions from Gemini API
+     */
     fun fetchSuggestions() {
         viewModelScope.launch {
             _loading.value = true

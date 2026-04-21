@@ -46,7 +46,7 @@ suspend fun getGeminiSuggestions(
 
     Log.d("GeminiTest", "API Key: ${BuildConfig.GEMINI_API_KEY}")
 
-    val url = "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${BuildConfig.GEMINI_API_KEY}"
+    val url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${BuildConfig.GEMINI_API_KEY}"
     Log.d("GeminiTest", "URL: $url")
 
     val client = OkHttpClient.Builder()
@@ -66,7 +66,7 @@ suspend fun getGeminiSuggestions(
 
         if (!response.isSuccessful) {
             Log.e("GeminiTest", "Error body: $responseBody")
-            return@withContext "Error: ${response.code}"
+            throw Exception("Gemini error ${response.code}: try again in a moment")
         }
 
         val json = Json { ignoreUnknownKeys = true }

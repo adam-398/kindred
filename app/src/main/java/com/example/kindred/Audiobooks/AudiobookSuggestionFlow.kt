@@ -1,6 +1,7 @@
 package com.example.kindred.Audiobooks
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowColumn
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
@@ -25,10 +27,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -71,6 +75,10 @@ fun AudiobookSuggestionFlow(navController: NavController) {
     val viewModel: AudiobookSuggestionViewModel = viewModel()
 
     val attributes = listOf("Author", "Narrator", "Genres", "Themes", "Notes", "Rating")
+
+    val suggestions by viewModel.suggestions.collectAsState()
+    val loading by viewModel.loading.collectAsState()
+    val error by viewModel.error.collectAsState()
 
     LaunchedEffect(Unit) {
         audiobooks = getAudiobooks().filter { it.status == "listened to" }
@@ -229,7 +237,7 @@ fun AudiobookSuggestionFlow(navController: NavController) {
                         onClick = {
                             viewModel.setAttributeOrder(orderedAttributes)
                             viewModel.fetchSuggestions()
-                            navController.popBackStack()
+                            step = 4
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -238,6 +246,25 @@ fun AudiobookSuggestionFlow(navController: NavController) {
                         Text("Get suggestions")
                     }
 
+                }
+
+                4 -> {
+                    if (loading) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    } else if (error != null) {
+                        Text("Error: $error")
+                    } else {
+                        LazyColumn {
+                            items(suggestions) { suggestion ->
+                                AudiobookSuggestionCard(suggestedAudiobook = suggestion)
+                            }
+                        }
+                    }
                 }
             }
         }
