@@ -42,9 +42,11 @@ import androidx.navigation.NavController
 import com.example.kindred.DataModels.Audiobook
 import com.example.kindred.DataModels.AudiobookSuggestion
 import com.example.kindred.GeminiAPI.AudiobookSuggestionViewModel
+import com.example.kindred.SupabaseClient.supabase
 import com.example.kindred.getAudiobooks
 import com.example.kindred.sendAudiobookSuggestionData
 import com.example.kindred.ui.theme.MyChipColor
+import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.launch
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
@@ -289,7 +291,10 @@ fun AudiobookSuggestionFlow(navController: NavController) {
                             coroutineScope.launch {
                                 chosenSuggestions.forEach { suggestion ->
                                     sendAudiobookSuggestionData(
-                                        suggestion
+                                        suggestion.copy(
+                                            user_id = supabase.auth.currentSessionOrNull()?.user?.id,
+                                            entity_type = "audiobook"
+                                        )
                                     )
                                 }
                                 navController.popBackStack()
