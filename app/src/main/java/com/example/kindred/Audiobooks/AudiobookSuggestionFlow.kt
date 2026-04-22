@@ -31,6 +31,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,9 +40,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.kindred.DataModels.Audiobook
+import com.example.kindred.DataModels.AudiobookSuggestion
 import com.example.kindred.GeminiAPI.AudiobookSuggestionViewModel
 import com.example.kindred.getAudiobooks
+import com.example.kindred.sendAudiobookSuggestionData
 import com.example.kindred.ui.theme.MyChipColor
+import kotlinx.coroutines.launch
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 
@@ -79,6 +83,10 @@ fun AudiobookSuggestionFlow(navController: NavController) {
     val suggestions by viewModel.suggestions.collectAsState()
     val loading by viewModel.loading.collectAsState()
     val error by viewModel.error.collectAsState()
+
+    var chosenSuggestions by remember { mutableStateOf(emptyList<AudiobookSuggestion>()) }
+
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         audiobooks = getAudiobooks().filter { it.status == "listened to" }
@@ -261,12 +269,39 @@ fun AudiobookSuggestionFlow(navController: NavController) {
                     } else {
                         LazyColumn {
                             items(suggestions) { suggestion ->
-                                AudiobookSuggestionCard(suggestedAudiobook = suggestion)
+                                val isSelected = suggestion in chosenSuggestions
+                                AudiobookSuggestionCard(
+                                    suggestedAudiobook = suggestion,
+                                    isSelected = isSelected,
+                                    onClick = {
+                                        chosenSuggestions = if (isSelected) {
+                                            chosenSuggestions - suggestion
+                                        } else {
+                                            chosenSuggestions + suggestion
+                                        }
+                                    }
+                                )
                             }
                         }
                     }
-
-
+                    Button(
+                        onClick = {
+                            coroutineScope.launch {
+                                chosenSuggestions.forEach { suggestion ->
+                                    sendAudiobookSuggestionData(
+                                        suggestion
+                                    )
+                                }
+                                navController.popBackStack()
+                            }
+                        },
+                        enabled = chosenSuggestions.isNotEmpty(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    ) {
+                        Text("Save audiobooks")
+                    }
                 }
             }
         }

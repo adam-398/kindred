@@ -307,7 +307,7 @@ suspend fun deleteAudiobookSuggestion(suggestionId: Int) {
 /**
  * Sends audiobook suggestion to Supabase
  */
-suspend fun sendAudiobookSuggestion(audiobookSuggestion: AudiobookSuggestion) {
+suspend fun sendAudiobookSuggestionData(audiobookSuggestion: AudiobookSuggestion) {
     SupabaseClient.supabase.postgrest["suggestions"]
         .insert(audiobookSuggestion)
 }

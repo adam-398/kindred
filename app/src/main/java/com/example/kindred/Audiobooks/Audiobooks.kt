@@ -184,7 +184,10 @@ fun AudioBooks(navController: NavController) {
                                         }
                                     }
                                 ) {
-                                    AudiobookSuggestionCard(suggestedAudiobook = suggestion)
+                                    AudiobookSuggestionCard(suggestedAudiobook = suggestion,
+                                        isSelected = false,
+                                        onClick = {}
+                                    )
                                 }
                             }
                         }

@@ -3,6 +3,7 @@ package com.example.kindred.Audiobooks
 
 
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -32,13 +33,20 @@ import com.example.kindred.DataModels.AudiobookSuggestion
  * Composable function which displays a suggested audiobook card.
  *
  * @param audiobook to display.
+ * @param isSelected whether the audiobook is selected or not.
+ * @param onClick the action to perform when the card is clicked.
  */
 @Composable
-fun AudiobookSuggestionCard(suggestedAudiobook: AudiobookSuggestion) {
+fun AudiobookSuggestionCard(
+    suggestedAudiobook: AudiobookSuggestion,
+    isSelected: Boolean,
+    onClick: () -> Unit) {
     Card(
+        onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp, vertical = 6.dp),
+        border = if (isSelected) BorderStroke(2.dp, MaterialTheme.colorScheme.primary) else null,
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
