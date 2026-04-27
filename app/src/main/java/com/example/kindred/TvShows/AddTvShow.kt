@@ -45,8 +45,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.kindred.ConfirmationMessage
 import com.example.kindred.DataModels.Movie
-import com.example.kindred.SupabaseClient.supabase
-import com.example.kindred.sendMovieData
+import com.example.kindred.Supabase.SupabaseClient.supabase
+import com.example.kindred.Supabase.sendMovieData
 import com.example.kindred.ui.theme.MyChipColor
 import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.launch

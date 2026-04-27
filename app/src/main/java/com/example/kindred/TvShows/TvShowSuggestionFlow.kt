@@ -24,7 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.kindred.DataModels.TvShow
-import com.example.kindred.getTvShows
+import com.example.kindred.Supabase.getTvShows
 
 /**
  * Composable function which displays the tv show suggestion flow.

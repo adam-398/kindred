@@ -24,7 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.kindred.DataModels.Book
-import com.example.kindred.getBooks
+import com.example.kindred.Supabase.getBooks
 
 
 /**

@@ -22,7 +22,8 @@ import com.example.kindred.Books.Books
 import com.example.kindred.Movies.AddMovie
 import com.example.kindred.Movies.MovieSuggestionFlow
 import com.example.kindred.Movies.Movies
-import com.example.kindred.SupabaseClient.supabase
+import com.example.kindred.Supabase.SupabaseClient
+import com.example.kindred.Supabase.SupabaseClient.supabase
 import com.example.kindred.TvShows.AddTvShow
 import com.example.kindred.TvShows.TV
 import com.example.kindred.TvShows.TvSuggestionFlow

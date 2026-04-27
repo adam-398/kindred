@@ -44,10 +44,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.kindred.DataModels.Book
 import com.example.kindred.DataModels.BookSuggestion
-import com.example.kindred.deleteBook
-import com.example.kindred.deleteBookSuggestion
-import com.example.kindred.getBookSuggestions
-import com.example.kindred.getBooks
+import com.example.kindred.Supabase.deleteBook
+import com.example.kindred.Supabase.deleteBookSuggestion
+import com.example.kindred.Supabase.getBookSuggestions
+import com.example.kindred.Supabase.getBooks
 import kotlinx.coroutines.launch
 import kotlin.collections.emptyList
 

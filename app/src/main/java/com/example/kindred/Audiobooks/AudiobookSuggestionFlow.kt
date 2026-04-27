@@ -42,9 +42,9 @@ import androidx.navigation.NavController
 import com.example.kindred.DataModels.Audiobook
 import com.example.kindred.DataModels.AudiobookSuggestion
 import com.example.kindred.GeminiAPI.AudiobookSuggestionViewModel
-import com.example.kindred.SupabaseClient.supabase
-import com.example.kindred.getAudiobooks
-import com.example.kindred.sendAudiobookSuggestionData
+import com.example.kindred.Supabase.SupabaseClient.supabase
+import com.example.kindred.Supabase.getAudiobooks
+import com.example.kindred.Supabase.sendAudiobookSuggestionData
 import com.example.kindred.ui.theme.MyChipColor
 import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.launch

@@ -43,10 +43,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.kindred.DataModels.TvShow
-import com.example.kindred.deleteTvShow
-import com.example.kindred.deleteTvShowSuggestion
-import com.example.kindred.getTvShowSuggestions
-import com.example.kindred.getTvShows
+import com.example.kindred.Supabase.deleteTvShow
+import com.example.kindred.Supabase.deleteTvShowSuggestion
+import com.example.kindred.Supabase.getTvShowSuggestions
+import com.example.kindred.Supabase.getTvShows
 import kotlinx.coroutines.launch
 import com.example.kindred.DataModels.TvShowSuggestion
 

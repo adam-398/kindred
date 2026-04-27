@@ -45,8 +45,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.kindred.ConfirmationMessage
 import com.example.kindred.DataModels.Audiobook
-import com.example.kindred.SupabaseClient.supabase
-import com.example.kindred.sendAudiobookData
+import com.example.kindred.Supabase.SupabaseClient.supabase
+import com.example.kindred.Supabase.sendAudiobookData
 import com.example.kindred.ui.theme.MyChipColor
 import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.launch

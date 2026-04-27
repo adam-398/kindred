@@ -1,6 +1,5 @@
 package com.example.kindred.Audiobooks
 
-import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -44,11 +43,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.kindred.DataModels.Audiobook
 import com.example.kindred.DataModels.AudiobookSuggestion
-import com.example.kindred.GeminiAPI.getGeminiSuggestions
-import com.example.kindred.deleteAudiobook
-import com.example.kindred.deleteAudiobookSuggestion
-import com.example.kindred.getAudiobookSuggestions
-import com.example.kindred.getAudiobooks
+import com.example.kindred.Supabase.deleteAudiobook
+import com.example.kindred.Supabase.deleteAudiobookSuggestion
+import com.example.kindred.Supabase.getAudiobookSuggestions
+import com.example.kindred.Supabase.getAudiobooks
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

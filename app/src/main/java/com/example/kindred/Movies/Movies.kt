@@ -46,10 +46,10 @@ import com.example.kindred.Books.MovieCard
 import com.example.kindred.DataModels.Movie
 import com.example.kindred.DataModels.MovieSuggestion
 
-import com.example.kindred.deleteMovie
-import com.example.kindred.deleteMovieSuggestion
-import com.example.kindred.getMovieSuggestions
-import com.example.kindred.getMovies
+import com.example.kindred.Supabase.deleteMovie
+import com.example.kindred.Supabase.deleteMovieSuggestion
+import com.example.kindred.Supabase.getMovieSuggestions
+import com.example.kindred.Supabase.getMovies
 import kotlinx.coroutines.launch
 import kotlin.collections.emptyList
 

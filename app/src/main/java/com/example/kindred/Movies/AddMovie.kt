@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -30,7 +29,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -47,8 +45,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.kindred.ConfirmationMessage
 import com.example.kindred.DataModels.Movie
-import com.example.kindred.SupabaseClient.supabase
-import com.example.kindred.sendMovieData
+import com.example.kindred.Supabase.SupabaseClient.supabase
+import com.example.kindred.Supabase.sendMovieData
 import com.example.kindred.ui.theme.MyChipColor
 import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.launch
