@@ -49,7 +49,6 @@ import com.example.kindred.Supabase.deleteBookSuggestion
 import com.example.kindred.Supabase.getBookSuggestions
 import com.example.kindred.Supabase.getBooks
 import kotlinx.coroutines.launch
-import kotlin.collections.emptyList
 
 /**
  * Composable function which displays the books screen.
@@ -177,12 +176,16 @@ fun Books(navController: NavController) {
                                         }
                                     }
                                 ) {
-                                    BookSuggestionCard(suggestedBook = suggestion)
+                                    BookSuggestionCard(
+                                        suggestedBook = suggestion,
+                                        isSelected = false,
+                                        onClick = {}
+                                    )
                                 }
                             }
                         }
                     } else {
-                        LazyColumn() {
+                        LazyColumn {
                             items(
                                 books.filter {
                                     if (selectedTab == 0) it.status == "wishlist"

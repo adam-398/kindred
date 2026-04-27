@@ -67,7 +67,6 @@ fun AudiobookSuggestionFlow(navController: NavController) {
     var step by remember { mutableStateOf(1) }
     var audiobooks by remember { mutableStateOf<List<Audiobook>>(emptyList()) }
     var selectedAudiobooks by remember { mutableStateOf(setOf<Audiobook>()) }
-
     var selectedAttributes by remember { mutableStateOf(setOf<String>()) }
     var orderedAttributes by remember { mutableStateOf(listOf<String>()) }
 
